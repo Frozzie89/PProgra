@@ -10,7 +10,12 @@ public class PPMain {
 		int[][]tab2 = 
 			{{1,4,0,5},
 			{2,4,0,5}};
+		int[] tabb = {2,1,4,5,3};
+		int[][] tabb2 = {{4,1,3,2},{3,2,1,5}};
+		JobS testt = new JobS(tabb, tabb2);
+		JobS testt2 = new JobS(tab, tab2);
 		JobS test = ReadJobS.inputJobMatrix();
+		JobS test2 = ReadJobS.inputJobMatrix();
 		System.out.println(test.toString());
 		int count = Permutations.changeColToRef(test.getJobS(), tab2, 0, 0);
 		System.out.println(test.toString());
@@ -18,6 +23,8 @@ public class PPMain {
 		Permutations.orderCol(tab2, 1);
 		Permutations.orderCol(tab2, 0);
 		System.out.println(Arrays.deepToString(tab2));
+		int yy = JobS.getColIndex(testt, testt2, 4);
+		System.out.println(yy);
 		}
 		
 		

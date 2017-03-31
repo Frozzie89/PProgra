@@ -77,6 +77,19 @@ public class JobS {
 			System.out.println("Les tableaux doivent être de la même taille (JobS/fillLine).");
 		}
 	}
+	
+	public static int getColIndex(JobS jobs1, JobS jobs2, int indexJ1){ //Gives the index of the corresponding job (example : [1,2,3] and [1,3,2] with index 1 will return 2 (position of integer 2 in the second array). 
+		int numb = jobs1.getJobOrder()[indexJ1];
+		int index = -1;
+		for(int i=0; i<jobs2.getJobOrder().length;i++){
+			if(jobs2.getJobOrder()[i] == numb){
+				index = i;
+			}
+		}
+		return index;
+		
+	}
+	
 	public String toString() {
 		return "jobOrder=" + Arrays.toString(jobOrder) + ", jobS=" + Arrays.deepToString(jobS);
 	}
