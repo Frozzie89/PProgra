@@ -86,8 +86,15 @@ public class JobS {
 				index = i;
 			}
 		}
-		return index;
-		
+		return index;	
+	}
+	
+	public int[] selectTabIndex(int index){
+		int[] tab = new int [this.jobS[0].length];
+		for(int i=0; i<this.jobS[0].length;i++){
+			tab[i] = this.jobS[index][i];
+		}
+		return tab;
 	}
 	
 	public String toString() {
