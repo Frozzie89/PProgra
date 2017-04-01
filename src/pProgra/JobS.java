@@ -18,7 +18,7 @@ public class JobS {
 		this.jobS = jobS;
 	}
 	
-	public JobS(int jobs, int tools){// Creates one more line for the title (jobOrder).
+	public JobS(int jobs, int tools){
 		super();
 		int[][] tab = new int[jobs][tools]; 
 		int[] tab2 = new int[jobs];
@@ -131,9 +131,24 @@ public class JobS {
 	/////////////////////////////////////////////////////////////////////
 	
 	public static int compareTwoJ(JobS j1, JobS j2, int index1, int index2){ //TODO : end this method (change return 0 too)
-		
-		int sNumb1 = amountSameNumb(j1.getJobS(), index1, 0);
-		return 0;
+		int indexData = 0;													 // This method allows you to use multiple times the same tool and will still work. Example : [1,2,2,3]
+		int n = j1.jobS[index1].length;										 // n = the length of the tab. Calculates numbers of same integers in the first tab as j and in the second tab as k. (except for 0's)
+		int nZeros = numberCounter(j2.jobS[index2], 0);						 // If j > k then n doesn't move, but if j<=k then subtract  j to n. Then subtract the numbers of 0's in tab2 to n. The n left at the end is the number of changes necessary, or the cost.
+		while(indexData<j1.jobS[index1].length){
+			if(j1.jobS[index1][indexData] != 0){
+				int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
+				int k = numberCounter(j2.jobS[index2], j1.jobS[index1][indexData]);
+					if(j <= k){
+						n-=j;
+					}
+				indexData += j;
+			}
+			else{
+				indexData++;
+			}
+		}
+		n -= nZeros;
+		return n;
 	}
 		
 	

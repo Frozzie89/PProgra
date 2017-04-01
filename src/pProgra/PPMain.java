@@ -8,7 +8,7 @@ public class PPMain {
 	
 		int[] tab = {1,2,3,4,5};
 		int[][]tab2 = 
-			{{1,1,0,5},
+			{{1,1,8,5},
 			{2,2,0,5}};
 		int[] tabb = {2,1,4,5,3};
 		int[][] tabb2 = {{4,1,3,2},{3,2,1,5}};
@@ -30,9 +30,9 @@ public class PPMain {
 		int c = JobS.amountSameNumb(testt2.getJobS(), 0, 0);
 		System.out.println(c);
 		System.out.println(JobS.numberCounter(tab2[1], 2));
-		System.out.println("change is good too");
-		System.out.println("change is good too");
-		System.out.println("change is good too");
+		int n = JobS.compareTwoJ(testt, testt2, 0, 0);
+		
+		System.out.println("nchanges :" + n);
 		}
 		
 		
