@@ -99,7 +99,7 @@ public class JobS {
 	}
 	
 	public static int amountSameNumb(int tab[][], int colIndex, int startIndex){ //Returns the amount of same numbers in a tab (ordered one) example : [1,1,2] starting at index 0 will return 2 because there is two 1's.
-		int numb = tab[colIndex][startIndex];
+		int numb = tab[colIndex][startIndex];									 // TODO : Is this method necessary ? (numberCounter seems better)
 		int counter = 0;
 		for(int i=0; i<tab[colIndex].length; i++){
 			if(tab[colIndex][i] == numb)
@@ -109,6 +109,31 @@ public class JobS {
 			}
 		}
 		return counter; 
+	}
+	/////////////////////////////////////////////////////////////////////////// 
+	public static int numberCounter(int[] tab, int number){						// Returns the amount of same numbers in a tab.
+		int counter = 0;
+		for(int i=0; i<tab.length; i++){
+			if(tab[i] == number)
+				counter++;
+		}
+		return counter;
+	}
+	
+	public static int numberCounter(int[] tab, int number, int startIndex){
+		int counter = 0;
+		for(int i=startIndex; i<tab.length; i++){
+			if(tab[i] == number)
+				counter++;
+		}
+		return counter;
+	}
+	//////////////////////////////////////////////////////////////////////////////
+	
+	public static int compareTwoJ(JobS j1, JobS j2, int index1, int index2){ //TODO : end this method (change return 0 too)
+		
+		int sNumb1 = amountSameNumb(j1.getJobS(), index1, 0);
+		return 0;
 	}
 		
 	

@@ -29,6 +29,7 @@ public class PPMain {
 		System.out.println(Arrays.toString(tabtest));
 		int c = JobS.amountSameNumb(testt2.getJobS(), 0, 0);
 		System.out.println(c);
+		System.out.println(JobS.numberCounter(tab2[1], 2));
 		}
 		
 		
