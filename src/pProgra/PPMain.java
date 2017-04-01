@@ -30,7 +30,9 @@ public class PPMain {
 		int c = JobS.amountSameNumb(testt2.getJobS(), 0, 0);
 		System.out.println(c);
 		System.out.println(JobS.numberCounter(tab2[1], 2));
-		System.out.println("change is good");
+		System.out.println("change is good too");
+		System.out.println("change is good too");
+		System.out.println("change is good too");
 		}
 		
 		
