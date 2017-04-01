@@ -55,6 +55,7 @@ public class JobS {
 			System.out.println("Les tableaux doivent être de la même taille (JobS/fillLine).");
 		}
 	}
+
 	//Fill column
 	public static void fillColumn(int[][] tab1, int[]tab2, int columnIndex){ //Tab1 is the array to fill, tab2 is the source.
 		if(tab1[0].length == tab2.length){
@@ -89,13 +90,28 @@ public class JobS {
 		return index;	
 	}
 	
-	public int[] selectTabIndex(int index){
+	public int[] selectTabIndex(int index){ //return the tab with index from this JobS job sequence. (vertical)
 		int[] tab = new int [this.jobS[0].length];
 		for(int i=0; i<this.jobS[0].length;i++){
 			tab[i] = this.jobS[index][i];
 		}
 		return tab;
 	}
+	
+	public static int amountSameNumb(int tab[][], int colIndex, int startIndex){ //Returns the amount of same numbers in a tab (ordered one) example : [1,1,2] starting at index 0 will return 2 because there is two 1's.
+		int numb = tab[colIndex][startIndex];
+		int counter = 0;
+		for(int i=0; i<tab[colIndex].length; i++){
+			if(tab[colIndex][i] == numb)
+				counter++;
+			else{
+				break;
+			}
+		}
+		return counter; 
+	}
+		
+	
 	
 	public String toString() {
 		return "jobOrder=" + Arrays.toString(jobOrder) + ", jobS=" + Arrays.deepToString(jobS);
