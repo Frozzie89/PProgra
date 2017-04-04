@@ -1,12 +1,13 @@
 package pProgra;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PPMain {
 
 	public static void main(String[] args) {
-	
-		int[] tab = {1,2,3,4,5};
+		ArrayList<int[]> al = new ArrayList<int[]>();
+		int[] tab = {1,2,3};
 		int[][]tab2 = 
 			{{1,1,8,8},
 			{1,2,7,0}};
@@ -24,8 +25,6 @@ public class PPMain {
 		Permutations.orderCol(tab2, 1);
 		Permutations.orderCol(tab2, 0);
 		System.out.println(Arrays.deepToString(tab2));
-		int yy = JobS.getColIndex(testt, testt2, 4);
-		System.out.println(yy);
 		System.out.println(Arrays.toString(tabtest));
 		int c = JobS.amountSameNumb(testt2.getJobS(), 0, 0);
 		System.out.println(c);
@@ -40,7 +39,13 @@ public class PPMain {
 		System.out.println("nchanges :" + n);
 		int h = jobtest.JobSCost();
 		System.out.println("cost =" + h);
-		}
+		Permutations.permute(0, tab, al);
+		JobS jtest = ReadJobS.inputJobMatrix();
+		int[] seq = {1,2,3,4,5,6};
+		int seqC = JobS.JobSCostExt(jtest, seq);
+		System.out.println(seqC);
+	}
+	
 		
 		
 		

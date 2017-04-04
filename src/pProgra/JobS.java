@@ -67,8 +67,9 @@ public class JobS {
 			System.out.println("Les tableaux doivent être de la même taille (JobS/fillColumn).");
 		}
 	}
-
-	public static void fillLine(int[] tab1, int[]tab2, int lineIndex){ //Tab1 is the array to fill, tab2 is the source.
+	
+	//Fill Line
+	public static void fillLine(int[] tab1, int[]tab2){ //Tab1 is the array to fill, tab2 is the source.
 		if(tab1.length == tab2.length){
 			for(int i = 0; i<tab1.length; i++){
 				tab1[i]=tab2[i];
@@ -79,18 +80,31 @@ public class JobS {
 		}
 	}
 	
-	public static int getColIndex(JobS jobs1, JobS jobs2, int indexJ1){ //Gives the index of the corresponding job (example : [1,2,3] and [1,3,2] with index 1 will return 2 (position of integer 2 in the second array). 
-		int numb = jobs1.getJobOrder()[indexJ1];
+	//Fill column
+		public static void fillColumn(int[] tab1, int[]tab2){ //Tab1 is the array to fill, tab2 is the source.
+			if(tab1.length == tab2.length){
+				for(int i = 0; i<tab1.length; i++){
+					tab1[i]=tab2[i];
+				}
+			}
+			else{
+				System.out.println("Les tableaux doivent être de la même taille (JobS/fillColumn).");
+			}
+		}
+	//Gives the index of the corresponding job (example : [1,2,3] and [1,3,2] with index 1 will return 2 (position of integer 2 in the second array).
+	public static int getColIndex(int[] j1, int[] j2, int indexJ1){  
+		int numb = j1[indexJ1];
 		int index = -1;
-		for(int i=0; i<jobs2.getJobOrder().length;i++){
-			if(jobs2.getJobOrder()[i] == numb){
+		for(int i=0; i<j2.length;i++){
+			if(j2[i] == numb){
 				index = i;
+				break;
 			}
 		}
 		return index;	
 	}
-	
-	public int[] selectTabIndex(int index){ //return the tab with index from this JobS job sequence. (vertical)
+	//return the tab with index from this JobS job sequence. (vertical)
+	public int[] selectTabIndex(int index){ 
 		int[] tab = new int [this.jobS[0].length];
 		for(int i=0; i<this.jobS[0].length;i++){
 			tab[i] = this.jobS[index][i];
@@ -129,7 +143,7 @@ public class JobS {
 		return counter;
 	}
 	/////////////////////////////////////////////////////////////////////
-	
+	//Returns the Cost of JobS (only use this if both JobS and JobOrder are filled).
 	public int JobSCost(){
 		int counter = 0;
 		int add = 0;
@@ -140,10 +154,11 @@ public class JobS {
 		return counter;
 	}
 	
-		public static int compareTwoCol(JobS j1, JobS j2, int index1, int index2){ // TODO : Maybe only one JobS is necessary
+
+		public static int compareTwoCol(JobS j1, JobS j2, int index1, int index2){ 
 			int indexData = 0;													 // This method allows you to use multiple times the same tool and will still work. Example : [1,2,2,3]
 			int n = j1.jobS[index1].length;										 // n = the length of the tab. Calculates numbers of same integers in the first tab as j and in the second tab as k. (except for 0's)
-			int nZeros = numberCounter(j2.jobS[index2], 0);						 // If j > k then n doesn't move, but if j<=k then subtract  j to n. Then subtract the numbers of 0's in tab2 to n. The n left at the end is the number of changes necessary, or the cost.
+			int nZeros = numberCounter(j2.jobS[index2], 0);						 // If j > k then n-=k, but if j<=k then subtract  j to n. Then subtract the numbers of 0's in tab2 to n. The n left at the end is the number of changes necessary, or the cost.
 			while(indexData<j1.jobS[index1].length){
 				if(j1.jobS[index1][indexData] != 0){
 					int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
@@ -165,8 +180,47 @@ public class JobS {
 			return n;
 		}
 		
-	
-	
+		public static int compareTwoCol(JobS j1, int index1, int index2){ //Polymorph method above for only 1 JobS as parameter.
+			int indexData = 0;													
+			int n = j1.jobS[index1].length;										 
+			int nZeros = numberCounter(j1.jobS[index2], 0);						
+			while(indexData<j1.jobS[index1].length){
+				if(j1.jobS[index1][indexData] != 0){
+					int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
+					int k = numberCounter(j1.jobS[index2], j1.jobS[index1][indexData]);
+						if(j <= k){
+							n-=j;
+						}
+						else{
+							n-=k;
+						}
+						
+					indexData += j;
+				}
+				else{
+					indexData++;
+				}
+			}
+			n -= nZeros;
+			return n;
+		}
+		//Used to calculate cost of the different orders. This method allows us to compare the costs by using only the input tab as reference, so we don't need to create n JobS objects and resulting in less memory used.
+		//j1 is the input JobS.
+	public static int JobSCostExt(JobS j1, int[] seq){ 
+		int cost = 0; //Total cost stock variable.
+		//Adds the first row cost. (first job) 
+		cost += (j1.jobS[0].length) - numberCounter(j1.selectTabIndex(getColIndex(seq, j1.jobOrder, 0)), cost); //Length - numbers of 0's.
+		if(j1.jobOrder.length == seq.length){ //Requires both tabs to bad the same length 
+			for(int i=0; i<seq.length-1; i++){
+				cost += compareTwoCol(j1, getColIndex(seq, j1.jobOrder, i), getColIndex(seq, j1.jobOrder, i+1)); //Get the right columns indexes in the input matrix and compare them to get the cost.
+			}
+		}
+		else{
+			System.out.println("Les tableaux doivent être de la même taille.");
+		}
+		return cost;
+	}
+		
 	public String toString() {
 		return "jobOrder=" + Arrays.toString(jobOrder) + ", jobS=" + Arrays.deepToString(jobS);
 	}

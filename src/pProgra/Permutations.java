@@ -7,8 +7,7 @@ public class Permutations {
 
 	public  static void permute(int start, int[] input, ArrayList <int[]> al) { 
 		//This method is recursive, it will open multiple instances of the input tab by calling itself and modify them, then stock tab in ArrayList when the operations are done for this tab.
-		//ArrayList must be empty.
-		if(al.isEmpty()){
+		//ArrayList must be empty. Basically returns all the switching possibilities between an integers array.
 			//Printing tab if iterations for that specific tab are done
 	        if (start == input.length) {
 	        	al.add(Arrays.copyOf(input, input.length)); //Making a deep copy of the tab ("=" would only copy index and...)
@@ -17,7 +16,7 @@ public class Permutations {
 	            // for(int x: input){
 	            // System.out.print(x);
 	            // }
-	        	// System.out.println("");
+	        	// System.out.println("here");
 	        	////////////////////////////////
 	        //End the specific tab loop when it's printed 
 	        
@@ -38,7 +37,7 @@ public class Permutations {
 		        // System.out.println("");
 		        // System.out.print("---");
 		        // for(int x: input){
-		        // 	System.out.print(x);
+		        //  	System.out.print(x);
 		        // }
 		        // System.out.println("");
 		        //////////////////////////////////////////////////
@@ -53,16 +52,14 @@ public class Permutations {
 	        
 	    }
 	}
-		else{
-			System.out.println("ArrayList must be empty.");
-		}
-}
+		
+
 	
 	public static int changeColToRef(int[][] tab1, int[][] tab2, int columnIndex1, int columnIndex2){ // tab1 is the one to change, tab2 is the source.
 		int counter = 0;
 		if(tab1[0].length == tab2[0].length){
 			for(int i=0; i<tab1[0].length;i++){
-				if(tab1[columnIndex1][i] != tab2[columnIndex2][i] && tab2[columnIndex2][i] != 0){ //Change if the tool is different (and != 0)
+				if(tab1[columnIndex1][i] != tab2[columnIndex2][i]){ //Change if the tool is different 
 					tab1[columnIndex1][i] = tab2[columnIndex2][i];
 					counter++;
 				}

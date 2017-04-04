@@ -77,7 +77,7 @@ public class ReadJobS {
 				a[i]=i+1;
 			}
 			//Filling Order tab with Job order
-			JobS.fillLine(tabFillOrder, a, 0);
+			JobS.fillLine(tabFillOrder, a);
 			//Reading the matrix line by line and filling tab line
 			for(int j=0; j<toolN; j++){
 				StringTokenizer st = new StringTokenizer(line);
