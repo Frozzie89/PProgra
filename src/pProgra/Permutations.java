@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class Permutations {
 
-	public  static void permute(int start, int[] input, ArrayList <int[]> al) { 
+	public  static void jobSequences(int start, int[] input, ArrayList <int[]> al) { 
 		//This method is recursive, it will open multiple instances of the input tab by calling itself and modify them, then stock tab in ArrayList when the operations are done for this tab.
 		//ArrayList must be empty. Basically returns all the switching possibilities between an integers array.
 			//Printing tab if iterations for that specific tab are done
@@ -43,7 +43,7 @@ public class Permutations {
 		        //////////////////////////////////////////////////
 		        
 		        //Changing numbers
-		        permute(start + 1, input, al);
+		        jobSequences(start + 1, input, al);
 		        
 		       // Changing numbers
 		        int temp2 = input[i];

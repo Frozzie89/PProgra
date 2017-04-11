@@ -92,6 +92,25 @@ public class JobS {
 				System.out.println("Les tableaux doivent être de la même taille (JobS/fillColumn).");
 			}
 		}
+		//used in method below. (getOrderMatrix)
+		//TODO : end this
+		
+//	private static void fillTab(int[] tab1, int[][] tab2, int index){ //tab1 is the tab to fill.
+//		for(int j=0; j<tab1.length; j++){
+//			tab1[j] = tab2[index][j];
+//		}
+//	}
+//	//Returns dual tab (matrix of the order)
+//	public static int[][] getOrderMatrix(int ID, ArrayList alOrders, JobS input){
+//		int jobN = ReadJobS.inputJobN();
+//		int toolN = ReadJobS.inputToolN();
+//		int[][] tabRet = new int[jobN][toolN];
+//		int[] fillTab = new int[jobN];
+//		for(int i=0; i<jobN; i++){
+//			fillTab(fillTab, input.getJobS(), i);
+//		}
+		
+	}
 	//Gives the index of the corresponding job (example : [1,2,3] and [1,3,2] with index 1 will return 2 (position of integer 2 in the second array).
 	public static int getColIndex(int[] j1, int[] j2, int indexJ1){  
 		int numb = j1[indexJ1];

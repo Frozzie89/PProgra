@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class PPMain {
 
 	public static void main(String[] args) {
-		
+
 		ArrayList<int[]> al = new ArrayList<int[]>();
 		int[] tab = {1,2,3};
 		int[][]tab2 = 
@@ -40,11 +40,23 @@ public class PPMain {
 		System.out.println("nchanges :" + n);
 		int h = jobtest.JobSCost();
 		System.out.println("cost =" + h);
-		Permutations.permute(0, tab, al);
+		Permutations.jobSequences(0, tab, al);
+		for(int i = 0; i < al.size(); i++){
+			String msg = "[ ";
+			int[] order = al.get(i);
+			for(int j = 0; j < order.length; j++){
+				msg = msg + order[j] + " ";
+			}
+			msg = msg + "]";
+			System.out.println(msg);
+		}
 		JobS jtest = ReadJobS.inputJobMatrix();
 		int[] seq = {1,2,3,4,5,6};
 		int seqC = JobS.JobSCostExt(jtest, seq);
 		System.out.println(seqC);
+
+		
+		Gui fenetre = new Gui();
 	}
 	
 		

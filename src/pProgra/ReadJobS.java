@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.StringTokenizer;
 public class ReadJobS {
 //This class is designed to handle the reading of the input. inputName variable is static and is used to set your filename.
+	
 	private static String inputName = "input.txt";
 
 	//Getters and Setters
@@ -21,7 +22,7 @@ public class ReadJobS {
 		String line = ""; // Line in tokenizer
 		try {
 			// Initializing reader.
-			FileReader fr = new FileReader("input.txt");
+			FileReader fr = new FileReader(inputName);
 			BufferedReader br = new BufferedReader(fr);
 			line = br.readLine();
 			StringTokenizer st = new StringTokenizer(line);
@@ -39,7 +40,7 @@ public class ReadJobS {
 		String line = ""; // Line in tokenizer
 		try {
 			// Initializing reader.
-			FileReader fr = new FileReader("input.txt");
+			FileReader fr = new FileReader(inputName);
 			BufferedReader br = new BufferedReader(fr);
 			for(int i=0; i<2; i++){ //Reach second line
 				line = br.readLine();
@@ -54,6 +55,7 @@ public class ReadJobS {
 		return jobN; 	
 	}
 	
+	
 	public static JobS inputJobMatrix(){
 		String line = ""; // Line in tokenizer
 		int jobN = inputJobN();
@@ -64,7 +66,7 @@ public class ReadJobS {
 		int[] tabFillOrder = new int[jobN];
 		try {
 			// Initializing reader.
-			FileReader fr = new FileReader("input.txt");
+			FileReader fr = new FileReader(inputName);
 			BufferedReader br = new BufferedReader(fr);
 			for(int i=0; i<3; i++){ //ReachFirstLine of matrix
 				line = br.readLine();
