@@ -1,5 +1,6 @@
 package pProgra;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class JobS {
@@ -204,10 +205,10 @@ public class JobS {
 			n -= nZeros;
 			return n;
 		}
-		//Used to calculate cost of the different orders. This method allows us to compare the costs by using only the input tab as reference, so we don't need to create n JobS objects and resulting in less memory used.
-		//j1 is the input JobS.
+		//Used to calculate cost of the different orders. This method allows us to compare the costs by using only the input tab as reference, so we don't need to create n JobS objects, resulting in less memory used.
+		//j1 will be the input JobS for our project.
 	public static int JobSCostExt(JobS j1, int[] seq){ 
-		int cost = 0; //Total cost stock variable.
+		int cost = 0; 	//Total cost stock variable.
 		//Adds the first row cost. (first job) 
 		cost += (j1.jobS[0].length) - numberCounter(j1.selectTabIndex(getColIndex(seq, j1.jobOrder, 0)), cost); //Length - numbers of 0's.
 		if(j1.jobOrder.length == seq.length){ //Requires both tabs to bad the same length 
@@ -220,7 +221,30 @@ public class JobS {
 		}
 		return cost;
 	}
+	
+	// Calculate all orders' costs then stock them in an ArrayList. The second ArrayList must be empty. Order and costs will be affected at the same index of corresponding ArrayList.
+	public static void StockJobSCost(JobS j1, ArrayList<int[]> alOrders, ArrayList<Integer> alCosts){
 		
+		//Check alCosts isEmpty.
+		if(alCosts.isEmpty()){
+			for(int i=0; i<alOrders.size(); i++){
+				alCosts.add(i, JobSCostExt(j1, alOrders.get(i)));
+			}
+		}
+		else{
+			System.out.println("alCosts must be empty, StockJobSCost method");
+		}
+	}
+	
+	//Return the index of the best order. (minimize costs)
+	public static int getMinCost(ArrayList<Integer> alCosts){
+		int index = 0;
+		for(int i=1; i<alCosts.size(); i++){
+			if(alCosts.get(index) > alCosts.get(i))
+				index = i;
+		}
+		return index;
+	}
 	public String toString() {
 		return "jobOrder=" + Arrays.toString(jobOrder) + ", jobS=" + Arrays.deepToString(jobS);
 	}
