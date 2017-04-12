@@ -93,28 +93,39 @@ public class JobS {
 			}
 		}
 		//used in method below. (getOrderMatrix)
-		//TODO : end this
+		//TODO : private methods
 		
-//	private static void fillTab(int[] tab1, int[][] tab2, int index){ //tab1 is the tab to fill.
-//		for(int j=0; j<tab1.length; j++){
-//			tab1[j] = tab2[index][j];
-//		}
-//	}
-//	//Returns dual tab (matrix of the order)
-//	public static int[][] getOrderMatrix(int ID, ArrayList alOrders, JobS input){
-//		int jobN = ReadJobS.inputJobN();
-//		int toolN = ReadJobS.inputToolN();
-//		int[][] tabRet = new int[jobN][toolN];
-//		int[] fillTab = new int[jobN];
-//		for(int i=0; i<jobN; i++){
-//			fillTab(fillTab, input.getJobS(), i);
-//		}
+	public static void fillTab(int[] tab1, int[] tab2){ //tab1 is the tab to fill.
+		if(tab1.length == tab2.length){
+			for(int i=0; i<tab1.length; i++){
+				tab1[i] = tab2[i];
+			}
+		}
+	}
+	//used below, fills a line in a integer dual tab.
+	public static void fillTabCol(int[][] tab1, int[] tab2, int index){
+		for(int i=0; i<tab1[0].length; i++){
+			tab1[index][i] = tab2[i];
+		}
+	}
+	//Returns dual tab (matrix of the order)
+	public static int[][] getOrderMatrix(int ID, ArrayList<int[]> alOrders, JobS input){
+		int[] order = alOrders.get(ID);
+		int[] tempTab = new int[ReadJobS.inputToolN()];
+		int[][] matrix = new int[ReadJobS.inputToolN()][ReadJobS.inputJobN()];
+		int[][] inputMatrix = input.jobS;
 		
-//	}
+		for(int i = 0; i<matrix.length;i++){
+			fillTab(tempTab, inputMatrix[order[i]-1]);
+			fillTabCol(matrix, tempTab, i);
+		}
+		return matrix;
+	}
 	//Gives the index of the corresponding job (example : [1,2,3] and [1,3,2] with index 1 will return 2 (position of integer 2 in the second array).
 	public static int getColIndex(int[] j1, int[] j2, int indexJ1){  
 		int numb = j1[indexJ1];
 		int index = -1;
+		
 		for(int i=0; i<j2.length;i++){
 			if(j2[i] == numb){
 				index = i;
@@ -123,9 +134,11 @@ public class JobS {
 		}
 		return index;	
 	}
+	
 	//return the tab with index from this JobS job sequence. (vertical)
 	public int[] selectTabIndex(int index){ 
 		int[] tab = new int [this.jobS[0].length];
+		
 		for(int i=0; i<this.jobS[0].length;i++){
 			tab[i] = this.jobS[index][i];
 		}
@@ -135,6 +148,7 @@ public class JobS {
 	public static int amountSameNumb(int tab[][], int colIndex, int startIndex){ //Returns the amount of same numbers in a tab (ordered one) example : [1,1,2] starting at index 0 will return 2 because there is two 1's.
 		int numb = tab[colIndex][startIndex];									 // TODO : Is this method necessary ? (numberCounter seems better)
 		int counter = 0;
+		
 		for(int i=0; i<tab[colIndex].length; i++){
 			if(tab[colIndex][i] == numb)
 				counter++;
@@ -147,6 +161,7 @@ public class JobS {
 	/////////////////////////////////////////////////////////////////////////// 
 	public static int numberCounter(int[] tab, int number){						// Returns the amount of same numbers in a tab.
 		int counter = 0;
+		
 		for(int i=0; i<tab.length; i++){
 			if(tab[i] == number)
 				counter++;
@@ -156,6 +171,7 @@ public class JobS {
 	
 	public static int numberCounter(int[] tab, int number, int startIndex){
 		int counter = 0;
+		
 		for(int i=startIndex; i<tab.length; i++){
 			if(tab[i] == number)
 				counter++;
@@ -167,6 +183,7 @@ public class JobS {
 	public int JobSCost(){
 		int counter = 0;
 		int add = 0;
+		
 		for(int i=0; i<this.jobS.length-1; i++){
 			add = compareTwoCol(this, this, i, i+1);
 			counter += add;
@@ -203,7 +220,8 @@ public class JobS {
 		public static int compareTwoCol(JobS j1, int index1, int index2){ //Polymorph method above for only 1 JobS as parameter.
 			int indexData = 0;													
 			int n = j1.jobS[index1].length;										 
-			int nZeros = numberCounter(j1.jobS[index2], 0);						
+			int nZeros = numberCounter(j1.jobS[index2], 0);	
+			
 			while(indexData<j1.jobS[index1].length){
 				if(j1.jobS[index1][indexData] != 0){
 					int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
@@ -241,7 +259,7 @@ public class JobS {
 		return cost;
 	}
 	
-	// Calculate all orders' costs then stock them in an ArrayList. The second ArrayList must be empty. Order and costs will be affected at the same index of corresponding ArrayList.
+	// Calculate all orders' costs then stock them in an ArrayList. The second ArrayList must be empty. Order and costs will be affected at the same index of corresponding ArrayList. j1 is the input matrix.
 	public static void StockJobSCost(JobS j1, ArrayList<int[]> alOrders, ArrayList<Integer> alCosts){
 		
 		//Check alCosts isEmpty.

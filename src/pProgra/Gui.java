@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -19,18 +20,22 @@ import javax.swing.JFileChooser;
 public class Gui extends JFrame implements ActionListener{ // Implements ActionListener so we can use it later in the class.
 	// Instancing those variables as class variables so we can use them in all class.
 	private ArrayList<int[]> alOrders = new ArrayList<int[]>();
+	private ArrayList<Integer> alCosts = new ArrayList<Integer>();
 	private JButton search;
 	private JButton showOrders;
 	private JButton optimizotron;
 	private JButton backHome;
 	private JButton backList; 
+	private JButton export;
 	private JLabel path = new JLabel("Chemin vers le fichier input.");
 	private JobS jobInput = ReadJobS.inputJobMatrix(); 
+	private int jobN = ReadJobS.inputJobN();
+	private int toolN = ReadJobS.inputToolN();
 	
 	//Basic GUI settings. (title, home panel, ...)
 	public Gui(){
 		
-		this.setTitle("Optimizotron k2000");
+		this.setTitle("Simple Job Optimizer");
 		this.setContentPane(accueil()); //I build the panels as methods and call the method to call panel. (see method below)
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -107,6 +112,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		JPanel container = new JPanel(); //Creating panel.
 		JPanel details = new JPanel(); //Creating panel into the first panel.
 		JPanel result = new JPanel(); 
+		
 		JPanel topResult = new JPanel();
 		JPanel bottomResult = new JPanel(); 
 		
@@ -122,6 +128,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		for(int j = 0; j < order.length; j++){ // Adding the order to the GridLayout. (details)
 			String newStr = " "+order[j];
 			JLabel temp = new JLabel(newStr);
+			temp.setHorizontalAlignment(JLabel.CENTER);
 			details.add(temp);
 		}
 		
@@ -144,13 +151,67 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		topResult.add(costLabel);
 		
 		//Adding back to list button to bottom part.
-		backList = new JButton("Retour à la liste.");
+		backList = new JButton("Retour à la liste");
 		backList.addActionListener(this);
 		bottomResult.add(backList);
 		container.add(result, BorderLayout.SOUTH); //Adding result to the bottom.
 		
 		
 		this.setSize(200,150); // Setting frame size.
+		return container;
+		
+	}
+	
+	private JPanel optiPanel(int minIndex){
+		
+		//Creating panels.
+		JPanel container = new JPanel(); 
+		JPanel tab = new JPanel();
+		JPanel bottom = new JPanel();
+		JPanel upperBottom = new JPanel();
+		JPanel lowerBottom = new JPanel();
+		
+		//Creating buttons.
+		backHome = new JButton("Retour");
+		export = new JButton("Exporter");
+		
+		//Adding buttons 
+		lowerBottom.add(export);
+		lowerBottom.add(backHome);
+		
+		//Adding action listeners
+		backHome.addActionListener(this);
+		export.addActionListener(this);
+		
+		
+		//Setting layouts.
+		container.setLayout(new BorderLayout());
+		tab.setLayout(new GridLayout(toolN+1, jobN));
+		
+		//Getting the order.
+		int[] tempTab = alOrders.get(minIndex);
+		
+		//Getting the tab in first line of tab Panel.
+		for(int i=0; i<tempTab.length; i++){
+			String tempStr = " " + tempTab[i];
+			JLabel tempLabel = new JLabel(tempStr);
+			tempLabel.setHorizontalAlignment(JLabel.CENTER);
+			tab.add(tempLabel);
+		}
+		
+		//Getting matrix to fill next lines.
+		int[][] tempMatrix = JobS.getOrderMatrix(minIndex, alOrders, jobInput);
+		
+		//Filling next lines with the matrix.
+		for(int i=0; i<tempMatrix.length; i++){
+			for(int j=0; i<tempMatrix[0].length; j++){
+				String tempStr = " " + tempMatrix[j][i];
+				JLabel tempLabel = new JLabel(tempStr);
+				tempLabel.setHorizontalAlignment(JLabel.CENTER);
+				tab.add(tempLabel);
+			}
+		}
+		this.setSize(200,200);
 		return container;
 		
 	}
@@ -180,7 +241,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			}
 		}
 		else if(source == showOrders){
-			
+			alOrders.clear();
 			int jobN = ReadJobS.inputJobN();
 			
 			int[] input = new int[jobN];
@@ -208,6 +269,30 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			OrderButton temp = (OrderButton)source;
 			int cost = JobS.JobSCostExt(jobInput, alOrders.get(temp.getID()));  
 			this.setContentPane(showDetails(temp.getID(), cost));
+			this.setVisible(true);
+			
+		}
+		else if(source == optimizotron){
+			//Clearing in case they're not empty.
+			alOrders.clear();
+			alCosts.clear();
+			
+			JobS inputJobS = ReadJobS.inputJobMatrix(); //input matrix.
+			int minIndex; //Will stock the best order index.
+			int[] input = new int[jobN]; //Just a tab 1..n to use as a parameter of jobSequences.
+			
+			for (int i=0; i<jobN; i++){ 
+				input[i]=i+1;
+			}
+			//Stocking all orders in ArrayList.
+			Permutations.jobSequences(0, input, alOrders);
+			//Stocking all costs in parallel.
+			JobS.StockJobSCost(inputJobS, alOrders, alCosts);
+			//Getting best order index.
+			minIndex = JobS.getMinCost(alCosts);
+			//Setting pane.
+			System.out.println(Arrays.toString(alOrders.get(minIndex)));
+			this.setContentPane(optiPanel(minIndex));
 			this.setVisible(true);
 			
 		}

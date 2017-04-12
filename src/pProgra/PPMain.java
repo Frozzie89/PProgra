@@ -54,6 +54,15 @@ public class PPMain {
 //		int[] seq = {1,2,3,4,5,6};
 //		int seqC = JobS.JobSCostExt(jtest, seq);
 //		System.out.println(seqC);
+//		int[] tab1 = {1,2,3,4,6};
+//		int[] tab2 = new int[5];
+//		JobS.fillTab(tab2, tab1);
+//		System.out.println(Arrays.toString(tab2));
+//		
+		int[][] mat1 = {{1,2,3}, {3,4,4}};
+		int[] mat2 = {5,6,4};
+		JobS.fillTabCol(mat1, mat2, 0);
+		System.out.println(Arrays.deepToString(mat1));
 
 		
 		Gui fenetre = new Gui();
