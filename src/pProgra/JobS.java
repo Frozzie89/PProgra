@@ -92,10 +92,9 @@ public class JobS {
 				System.out.println("Les tableaux doivent être de la même taille (JobS/fillColumn).");
 			}
 		}
-		//used in method below. (getOrderMatrix)
-		//TODO : private methods
 		
-	public static void fillTab(int[] tab1, int[] tab2){ //tab1 is the tab to fill.
+		//used in method below. (getOrderMatrix)
+	private static void fillTab(int[] tab1, int[] tab2){ //tab1 is the tab to fill.
 		if(tab1.length == tab2.length){
 			for(int i=0; i<tab1.length; i++){
 				tab1[i] = tab2[i];
@@ -103,7 +102,7 @@ public class JobS {
 		}
 	}
 	//used below, fills a line in a integer dual tab.
-	public static void fillTabCol(int[][] tab1, int[] tab2, int index){
+	private static void fillTabCol(int[][] tab1, int[] tab2, int index){
 		for(int i=0; i<tab1[0].length; i++){
 			tab1[index][i] = tab2[i];
 		}
@@ -112,7 +111,7 @@ public class JobS {
 	public static int[][] getOrderMatrix(int ID, ArrayList<int[]> alOrders, JobS input){
 		int[] order = alOrders.get(ID);
 		int[] tempTab = new int[ReadJobS.inputToolN()];
-		int[][] matrix = new int[ReadJobS.inputToolN()][ReadJobS.inputJobN()];
+		int[][] matrix = new int[ReadJobS.inputJobN()][ReadJobS.inputToolN()];
 		int[][] inputMatrix = input.jobS;
 		
 		for(int i = 0; i<matrix.length;i++){
@@ -248,14 +247,11 @@ public class JobS {
 		int cost = 0; 	//Total cost stock variable.
 		//Adds the first row cost. (first job) 
 		cost += (j1.jobS[0].length) - numberCounter(j1.selectTabIndex(getColIndex(seq, j1.jobOrder, 0)), cost); //Length - numbers of 0's.
-		if(j1.jobOrder.length == seq.length){ //Requires both tabs to bad the same length 
+		
 			for(int i=0; i<seq.length-1; i++){
 				cost += compareTwoCol(j1, getColIndex(seq, j1.jobOrder, i), getColIndex(seq, j1.jobOrder, i+1)); //Get the right columns indexes in the input matrix and compare them to get the cost.
 			}
-		}
-		else{
-			System.out.println("Les tableaux doivent être de la même taille.");
-		}
+		
 		return cost;
 	}
 	

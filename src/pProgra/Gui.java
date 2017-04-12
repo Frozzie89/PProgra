@@ -7,12 +7,17 @@ import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.TextAttribute;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -116,7 +121,6 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		JPanel topResult = new JPanel();
 		JPanel bottomResult = new JPanel(); 
 		
-		int height = ReadJobS.inputToolN()+1;
 		int width = ReadJobS.inputJobN();
 		
 		container.setLayout(new BorderLayout()); //Setting container layout.
@@ -162,6 +166,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private JPanel optiPanel(int minIndex){
 		
 		//Creating panels.
@@ -170,7 +175,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		JPanel bottom = new JPanel();
 		JPanel upperBottom = new JPanel();
 		JPanel lowerBottom = new JPanel();
-		
+				
 		//Creating buttons.
 		backHome = new JButton("Retour");
 		export = new JButton("Exporter");
@@ -187,6 +192,20 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		//Setting layouts.
 		container.setLayout(new BorderLayout());
 		tab.setLayout(new GridLayout(toolN+1, jobN));
+		bottom.setLayout(new GridLayout(2,1));
+		
+		//Upper label 
+		JLabel upperL = new JLabel("Meilleure solution : ");
+		upperL.setHorizontalAlignment(JLabel.CENTER);
+		container.add(upperL, BorderLayout.NORTH);
+		
+		//upperBottom label
+		JLabel upperBottomL = new JLabel("Coût :");
+		upperBottom.add(upperBottomL);
+		String costStr = " " + JobS.JobSCostExt(jobInput, alOrders.get(minIndex));
+		JLabel upperBottom2 = new JLabel(costStr);
+		upperBottom2.setForeground(Color.red);
+		upperBottom.add(upperBottom2);
 		
 		//Getting the order.
 		int[] tempTab = alOrders.get(minIndex);
@@ -195,6 +214,12 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		for(int i=0; i<tempTab.length; i++){
 			String tempStr = " " + tempTab[i];
 			JLabel tempLabel = new JLabel(tempStr);
+			Font font = tempLabel.getFont();
+			@SuppressWarnings("rawtypes")
+			Map attributes = font.getAttributes();
+			attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+			tempLabel.setFont(font.deriveFont(attributes));
+			tempLabel.setForeground(Color.BLUE);
 			tempLabel.setHorizontalAlignment(JLabel.CENTER);
 			tab.add(tempLabel);
 		}
@@ -203,15 +228,24 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		int[][] tempMatrix = JobS.getOrderMatrix(minIndex, alOrders, jobInput);
 		
 		//Filling next lines with the matrix.
-		for(int i=0; i<tempMatrix.length; i++){
-			for(int j=0; i<tempMatrix[0].length; j++){
+		for(int i=0; i<tempMatrix[0].length; i++){
+			for(int j=0; j<tempMatrix.length; j++){
 				String tempStr = " " + tempMatrix[j][i];
 				JLabel tempLabel = new JLabel(tempStr);
+				if(tempMatrix[j][i] == 0)
+					tempLabel.setForeground(new Color(50,205,50));
 				tempLabel.setHorizontalAlignment(JLabel.CENTER);
 				tab.add(tempLabel);
 			}
 		}
-		this.setSize(200,200);
+		
+		//Adding panels to their containers.
+		container.add(tab, BorderLayout.CENTER);
+		container.add(bottom, BorderLayout.SOUTH); 
+		bottom.add(upperBottom);
+		bottom.add(lowerBottom);
+		//Set size and return.
+		this.setSize(250,300);
 		return container;
 		
 	}
@@ -234,6 +268,10 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 				path.setText(selectedFile.getPath());
 				System.out.println(selectedFile.getPath());
 				ReadJobS.setInputName(selectedFile.getPath());
+				
+				jobInput = ReadJobS.inputJobMatrix(); 
+				jobN = ReadJobS.inputJobN();
+				toolN = ReadJobS.inputToolN();
 				
 				this.setContentPane(accueil());
 				this.setVisible(true);
@@ -291,10 +329,79 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			//Getting best order index.
 			minIndex = JobS.getMinCost(alCosts);
 			//Setting pane.
-			System.out.println(Arrays.toString(alOrders.get(minIndex)));
 			this.setContentPane(optiPanel(minIndex));
 			this.setVisible(true);
+			this.setResizable(true);
 			
+		}
+		else if(source == export){
+			
+			    JFileChooser chooser = new JFileChooser();
+			    int result = chooser.showSaveDialog(null);
+			    if (result == JFileChooser.APPROVE_OPTION) {
+			        try {
+			        	
+			        	//Printing top part of the file.
+			            FileWriter fw = new FileWriter(chooser.getSelectedFile()+".txt");
+			            BufferedWriter bw = new BufferedWriter(fw);
+			            bw.write("//////////////////////////");
+			            bw.newLine();
+			            bw.write("// Simple Job Optimizer //");
+			            bw.newLine();
+			            bw.write("//////////////////////////");
+			            bw.newLine();
+			            bw.newLine();
+			            bw.write("Best solution :");
+			            bw.newLine();
+			            bw.newLine();
+			            
+			            //Printing order
+			            bw.write("Order : ");
+			            bw.newLine();
+			            bw.newLine();
+			            bw.write("[ ");
+			            //Getting best order index.
+						int minIndex = JobS.getMinCost(alCosts);
+						int[] minOrder = alOrders.get(minIndex);
+						
+						//Printing
+						for(int i=0; i<minOrder.length; i++){
+							bw.write(minOrder[i] + " ");
+						}
+						bw.write("]");
+						bw.newLine();
+						bw.newLine();
+						bw.write("Matrix :");
+						bw.newLine();
+						bw.newLine();
+						
+						//Getting best order matrix.
+						int[][] tempMatrix = JobS.getOrderMatrix(minIndex, alOrders, jobInput);
+						
+						//Printing
+						for(int i=0; i<tempMatrix[0].length; i++){
+							for(int j=0; j<tempMatrix.length; j++){
+									bw.write(String.valueOf(tempMatrix[j][i]));
+									bw.write(" ");
+							}
+							bw.newLine();
+						}
+						
+						//Getting cost
+						int minCost = alCosts.get(minIndex);
+						
+						//Printing
+						bw.newLine();
+						bw.write("Cost : ");
+						bw.write(String.valueOf(minCost));
+						
+						
+						//Closing writer.
+			            bw.close();
+			        } catch (Exception ex) {
+			            ex.printStackTrace();
+			        }
+			    }
 		}
 		
 	}

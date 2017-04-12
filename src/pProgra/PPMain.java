@@ -59,10 +59,7 @@ public class PPMain {
 //		JobS.fillTab(tab2, tab1);
 //		System.out.println(Arrays.toString(tab2));
 //		
-		int[][] mat1 = {{1,2,3}, {3,4,4}};
-		int[] mat2 = {5,6,4};
-		JobS.fillTabCol(mat1, mat2, 0);
-		System.out.println(Arrays.deepToString(mat1));
+
 
 		
 		Gui fenetre = new Gui();
