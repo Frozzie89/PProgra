@@ -110,7 +110,7 @@ public class JobS {
 //			fillTab(fillTab, input.getJobS(), i);
 //		}
 		
-	}
+//	}
 	//Gives the index of the corresponding job (example : [1,2,3] and [1,3,2] with index 1 will return 2 (position of integer 2 in the second array).
 	public static int getColIndex(int[] j1, int[] j2, int indexJ1){  
 		int numb = j1[indexJ1];
