@@ -22,7 +22,8 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 	private JButton search;
 	private JButton showOrders;
 	private JButton optimizotron;
-	private JButton back;
+	private JButton backHome;
+	private JButton backList; 
 	private JLabel path = new JLabel("Chemin vers le fichier input.");
 	private JobS jobInput = ReadJobS.inputJobMatrix(); 
 	
@@ -70,10 +71,11 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 	
 	private JPanel showOrders(){ //Show orders panel, used to show different orders.
 		JPanel container = new JPanel(); //Creating panels and setting layouts.
-		container.setLayout(new BorderLayout());
 		JPanel buttonContainer = new JPanel();
-		buttonContainer.setLayout(new GridLayout(alOrders.size(), 1));
 		
+		container.setLayout(new BorderLayout());
+		buttonContainer.setLayout(new GridLayout(alOrders.size(), 1));
+
 		//Filling the lines one by one using the for loop. 
 		for(int i = 0; i < alOrders.size(); i++){
 			
@@ -88,50 +90,65 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			temp.addActionListener(this); //Adding action listener.
 			
 		}
+		
 		JScrollPane scroller = new JScrollPane(buttonContainer); //Creating scroll pane (the lines won't fit on the frame otherwise.)
 		container.add(scroller, BorderLayout.CENTER); //Placing it in the center of the frame.
 		
-		back = new JButton("Retour..."); //Creating button back.
-		back.addActionListener(this); //Adding action listener.
-		container.add(back, BorderLayout.SOUTH); //Placing back at the bottom.
+		backHome = new JButton("Retour..."); //Creating button back.
+		backHome.addActionListener(this); //Adding action listener.
+		container.add(backHome, BorderLayout.SOUTH); //Placing back at the bottom.
 		
 		this.setSize(200,400); //Change frame size.
 		return container;
 	}
 	
-	private JPanel showDetails(int id){ //Show details panel.
+	private JPanel showDetails(int id, int cost){ //Show details panel.
 		
 		JPanel container = new JPanel(); //Creating panel.
-		container.setLayout(new BorderLayout());
 		JPanel details = new JPanel(); //Creating panel into the first panel.
 		JPanel result = new JPanel(); 
-		
+		JPanel topResult = new JPanel();
+		JPanel bottomResult = new JPanel(); 
 		
 		int height = ReadJobS.inputToolN()+1;
 		int width = ReadJobS.inputJobN();
-//		System.out.println(height);
-//		System.out.println(width);
+		
+		container.setLayout(new BorderLayout()); //Setting container layout.
 		details.setLayout(new GridLayout(0, width)); //Setting second panel layout.
+		result.setLayout(new GridLayout(2,1)); //Setting bottom part layout.
+
 		
 		int[] order = alOrders.get(id); //Getting the order
-		for(int j = 0; j < order.length; j++){ // Adding the order to the GridLayout.
+		for(int j = 0; j < order.length; j++){ // Adding the order to the GridLayout. (details)
 			String newStr = " "+order[j];
 			JLabel temp = new JLabel(newStr);
 			details.add(temp);
 		}
+		
 		//Getting result.
 		JLabel stringCostLabel = new JLabel("Coût : ");
+		
 		//Getting cost.
-		int cost = JobS.JobSCostExt(jobInput, alOrders.get(id));  
 		String newStr2 = " " + cost;
 		JLabel costLabel = new JLabel(newStr2);
 		costLabel.setForeground(Color.RED);
 		
 		container.add(details, BorderLayout.CENTER); //Adding the details to the container.
 		
-		result.add(stringCostLabel);
-		result.add(costLabel);
+		//Dividing result in two Panels.
+		result.add(topResult);
+		result.add(bottomResult);
+		
+		//Adding cost to result top part.
+		topResult.add(stringCostLabel);
+		topResult.add(costLabel);
+		
+		//Adding back to list button to bottom part.
+		backList = new JButton("Retour à la liste.");
+		backList.addActionListener(this);
+		bottomResult.add(backList);
 		container.add(result, BorderLayout.SOUTH); //Adding result to the bottom.
+		
 		
 		this.setSize(200,150); // Setting frame size.
 		return container;
@@ -178,14 +195,19 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			this.setVisible(true);
 			
 		}
-		else if(source == back){
+		else if(source == backHome){
 			this.setContentPane(accueil());
 			this.setVisible(true);
 			alOrders = new ArrayList<int[]>();
 		}
+		else if(source == backList){
+			this.setContentPane(showOrders());
+			this.setVisible(true);
+		}
 		else if(source.getClass() == OrderButton.class){
 			OrderButton temp = (OrderButton)source;
-			this.setContentPane(showDetails(temp.getID()));
+			int cost = JobS.JobSCostExt(jobInput, alOrders.get(temp.getID()));  
+			this.setContentPane(showDetails(temp.getID(), cost));
 			this.setVisible(true);
 			
 		}
