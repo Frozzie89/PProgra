@@ -143,20 +143,7 @@ public class JobS {
 		}
 		return tab;
 	}
-	
-	public static int amountSameNumb(int tab[][], int colIndex, int startIndex){ //Returns the amount of same numbers in a tab (ordered one) example : [1,1,2] starting at index 0 will return 2 because there is two 1's.
-		int numb = tab[colIndex][startIndex];									 // TODO : Is this method necessary ? (numberCounter seems better)
-		int counter = 0;
-		
-		for(int i=0; i<tab[colIndex].length; i++){
-			if(tab[colIndex][i] == numb)
-				counter++;
-			else{
-				break;
-			}
-		}
-		return counter; 
-	}
+
 	/////////////////////////////////////////////////////////////////////////// 
 	public static int numberCounter(int[] tab, int number){						// Returns the amount of same numbers in a tab.
 		int counter = 0;
@@ -190,7 +177,86 @@ public class JobS {
 		return counter;
 	}
 	
-
+	private static boolean isInTab(int[] tab, int number){ //True if number is in tab, false else.
+		boolean b = false;
+		
+		for(int i=0; i<tab.length; i++){
+			if(tab[i] == number)
+				b = true;
+		}
+		return b;
+	}
+	
+	//Returns an arrayList containing the numbers that are in both tabs.
+	public static ArrayList<Integer> diffNumbers(ArrayList<Integer> al, int[] tab1, int[] tab2){
+		al.clear();
+		for(int i=0; i<tab1.length; i++){
+			if(isInTab(tab2, tab1[i]) == false){
+				al.add(tab1[i]);
+			}
+		}
+		return al;
+	}
+	
+	//Sets the first temp tab (always index0).
+	public static void setFirstTempTab(int[][] matrix, int[] temp, int[] order){
+		int firstIndex = order[0] - 1;
+		for(int i=0; i<matrix[firstIndex].length;i++){
+			temp[i] = matrix[firstIndex][i];
+		}
+	}
+	
+	//Goes pair with compareTwoCol. Sets the temporary tab (keeps the old tool if no new tool is necessary). If the new number is a 0, then it will search for a number that isn't already in the upcoming tab and put it in. (Equals letting an old tool in the machine when you don't need all places for the job).
+	public static void setTempTab(int[][] matrix, int[] temp, int index1){ // WARNING : DO NOT USE THIS FOR THE FIRST TEMP TAB SET, THIS IS A SWAPPING METHOD, WON'T WORK IF THE TAB IS EMPTY.
+		int temp2[] = temp;
+		int counter = 0; 
+		//Checking which numbers are from temp2 but not in upcoming temporary tab.
+		ArrayList<Integer> alDiff = new ArrayList<Integer>();
+		diffNumbers(alDiff, temp2, matrix[index1]);
+		
+		for(int i=0; i<temp.length; i++){ //For each part of the tab does the operations.
+			if(matrix[index1][i] != 0){ //If the number isn't 0, sets it to the number of the matrix[][i].
+				temp[i] = matrix[index1][i]; 
+			}
+			else{ //If the number is 0, set it to a number that isn't already in the tab (from previous temporary tab (stocked in temp2)).
+				if(counter<alDiff.size()){
+					temp[i] = alDiff.get(counter);
+					counter++;
+				}
+				else{ //If all different numbers are used, place 0 instead.
+					temp[i] = 0;
+				}
+				
+				}
+			}
+			//Ordering tab.
+			Permutations.orderTab(temp);
+		}
+		
+	
+	//Cost between two cols. Matrix is the input matrix, temp is the temp tab used to stock temporary tabs, index 2 is second column.
+	public static int compareTwoColBIS(int [][] matrix, int[] temp, int[] order, int index2){
+		int length = temp.length;
+//		System.out.println(Arrays.toString(temp));
+//		System.out.println(length);
+		for(int i=0; i<temp.length; i++){
+			if(matrix[(order[index2]-1)][i] != 0){
+//				System.out.println("iii");
+				if(isInTab(temp, matrix[(order[index2]-1)][i]) == true){
+//					System.out.println("ooo");
+					length --;
+				}
+			}
+			else{
+//				System.out.println("haha");
+				length --;
+			}
+		}
+//		System.out.println("end" +length);
+		return length;
+		
+	}
+	
 		public static int compareTwoCol(JobS j1, JobS j2, int index1, int index2){ 
 			int indexData = 0;													 // This method allows you to use multiple times the same tool and will still work. Example : [1,2,2,3]
 			int n = j1.jobS[index1].length;										 // n = the length of the tab. Calculates numbers of same integers in the first tab as j and in the second tab as k. (except for 0's)
@@ -255,18 +321,31 @@ public class JobS {
 		return cost;
 	}
 	
+	public static int JobSCostExtBIS(int[][] inputMatrix, int[] order){
+		int cost = 0;
+		int[] temp = new int[inputMatrix[0].length];
+		setFirstTempTab(inputMatrix, temp, order);
+		cost += compareTwoColBIS(inputMatrix, temp, order, 1);
+		
+		for(int i=1; i<inputMatrix.length-1; i++){
+			setTempTab(inputMatrix, temp, i);
+			cost += compareTwoColBIS(inputMatrix, temp, order, i+1);
+		}
+		
+		cost += (inputMatrix[0].length - numberCounter(inputMatrix[0], 0));
+		
+		return cost;
+	}
+	
 	// Calculate all orders' costs then stock them in an ArrayList. The second ArrayList must be empty. Order and costs will be affected at the same index of corresponding ArrayList. j1 is the input matrix.
 	public static void StockJobSCost(JobS j1, ArrayList<int[]> alOrders, ArrayList<Integer> alCosts){
 		
 		//Check alCosts isEmpty.
-		if(alCosts.isEmpty()){
+		alCosts.clear();
 			for(int i=0; i<alOrders.size(); i++){
-				alCosts.add(i, JobSCostExt(j1, alOrders.get(i)));
+				alCosts.add(i, JobSCostExtBIS(j1.getJobS(), alOrders.get(i)));
 			}
-		}
-		else{
-			System.out.println("alCosts must be empty, StockJobSCost method");
-		}
+		
 	}
 	
 	//Return the index of the best order. (minimize costs)

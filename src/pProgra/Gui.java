@@ -202,7 +202,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		//upperBottom label
 		JLabel upperBottomL = new JLabel("Coût :");
 		upperBottom.add(upperBottomL);
-		String costStr = " " + JobS.JobSCostExt(jobInput, alOrders.get(minIndex));
+		String costStr = " " + alCosts.get(minIndex);
 		JLabel upperBottom2 = new JLabel(costStr);
 		upperBottom2.setForeground(Color.red);
 		upperBottom.add(upperBottom2);
@@ -305,7 +305,8 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		}
 		else if(source.getClass() == OrderButton.class){
 			OrderButton temp = (OrderButton)source;
-			int cost = JobS.JobSCostExt(jobInput, alOrders.get(temp.getID()));  
+			int cost = JobS.JobSCostExtBIS(jobInput.getJobS(), alOrders.get(temp.getID()));  
+			System.out.println(cost);
 			this.setContentPane(showDetails(temp.getID(), cost));
 			this.setVisible(true);
 			
@@ -326,8 +327,14 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			Permutations.jobSequences(0, input, alOrders);
 			//Stocking all costs in parallel.
 			JobS.StockJobSCost(inputJobS, alOrders, alCosts);
+//			for(int i=0; i< alCosts.size(); i++){
+//				System.out.println(alCosts.get(i));
+//			}
 			//Getting best order index.
 			minIndex = JobS.getMinCost(alCosts);
+			System.out.println(minIndex);
+			System.out.println(alCosts.get(minIndex));
+			
 			//Setting pane.
 			this.setContentPane(optiPanel(minIndex));
 			this.setVisible(true);

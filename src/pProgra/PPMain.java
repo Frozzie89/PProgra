@@ -60,8 +60,14 @@ public class PPMain {
 //		System.out.println(Arrays.toString(tab2));
 //		
 
-
-		
+		int[][] matrix = {{1,2,5,0},{2,3,4,0},{1,2,5,6}};
+		int[] temp = new int[matrix[0].length];
+		int[] order = {1,2,3};
+		JobS.setFirstTempTab(matrix, temp, order);
+		JobS.setTempTab(matrix, temp, 1);
+		int cost;
+		cost = JobS.JobSCostExtBIS(matrix, order);
+		System.out.println(cost);
 		Gui fenetre = new Gui();
 	}
 	

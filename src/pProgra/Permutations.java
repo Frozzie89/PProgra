@@ -53,7 +53,6 @@ public class Permutations {
 	    }
 	}
 		
-
 	
 	public static int changeColToRef(int[][] tab1, int[][] tab2, int columnIndex1, int columnIndex2){ // tab1 is the one to change, tab2 is the source.
 		int counter = 0;
@@ -73,21 +72,21 @@ public class Permutations {
 	
 //The 3 following methods will order numbers in the column i (ascending AND placing 0 at the end) (In case the user didn't already do it in the input file this will prevent further problems).
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public static void orderCol(int[][] tab, int iCol){  
+	public static void orderTab(int[] tab){  
 		int temp;
 		int counter = 0;
-		for(int i=0; i< tab[0].length-1;i++){
-			if(tab[iCol][i] == 0)
+		for(int i=0; i< tab.length-1;i++){
+			if(tab[i] == 0)
 				counter++;
-			if(tab[iCol][i+1] < tab[iCol][i]){
+			if(tab[i+1] < tab[i]){
 				//swapping
-				temp = tab[iCol][i];
-				tab[iCol][i] = tab[iCol][i+1];
-				tab[iCol][i+1] = temp;
+				temp = tab[i];
+				tab[i] = tab[i+1];
+				tab[i+1] = temp;
 				i=-1;
 			}
 		}
-		rotate(tab[iCol], tab[iCol].length-counter); //Rotates the tab to place 0's at the end (see the two methods under for more explanations.
+		rotate(tab, tab.length-counter); //Rotates the tab to place 0's at the end (see the two methods under for more explanations.
 													 //(tab[iCol].length - counter) value is the numbers of rotations necessary, example : [0,1,2] will return 2 so the tabs becomes [1,2,0].  
 	}
 	
