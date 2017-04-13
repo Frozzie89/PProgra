@@ -320,7 +320,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			//Used when the user press an orderButton (on the order List).
 			//Calculates cost of the order.
 			OrderButton temp = (OrderButton)source;
-			int cost = JobS.JobSCostExtBIS(jobInput.getJobS(), alOrders.get(temp.getID()));  
+			int cost = JobS.JobSCostExt(jobInput, alOrders.get(temp.getID()));  
 			System.out.println(cost);
 			this.setContentPane(showDetails(temp.getID(), cost));
 			this.setVisible(true);

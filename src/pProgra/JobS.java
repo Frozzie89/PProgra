@@ -294,7 +294,7 @@ public class JobS {
 						if(j <= k){
 							n-=j;
 						}
-						else{
+						if(j > k){
 							n-=k;
 						}
 						
@@ -325,7 +325,9 @@ public class JobS {
 		int cost = 0;
 		int[] temp = new int[inputMatrix[0].length];
 		setFirstTempTab(inputMatrix, temp, order);
-		cost += compareTwoColBIS(inputMatrix, temp, order, 1);
+		cost += compareTwoColBIS
+				
+				(inputMatrix, temp, order, 1);
 		
 		for(int i=1; i<inputMatrix.length-1; i++){
 			setTempTab(inputMatrix, temp, i);
@@ -343,7 +345,7 @@ public class JobS {
 		//Check alCosts isEmpty.
 		alCosts.clear();
 			for(int i=0; i<alOrders.size(); i++){
-				alCosts.add(i, JobSCostExtBIS(j1.getJobS(), alOrders.get(i)));
+				alCosts.add(i, JobSCostExt(j1, alOrders.get(i)));
 			}
 		
 	}
