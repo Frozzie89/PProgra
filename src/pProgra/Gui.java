@@ -259,51 +259,66 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		Object source = e.getSource();
 		
 		if(source == search){
+			//FileChooser, used to choose the input file location. (default is app folder, input.txt)
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 			int result = fileChooser.showOpenDialog(this.getContentPane());
 			if (result == JFileChooser.APPROVE_OPTION) {
 				
+				//Changing input file path.
 				File selectedFile = fileChooser.getSelectedFile();
 				path.setText(selectedFile.getPath());
 				System.out.println(selectedFile.getPath());
 				ReadJobS.setInputName(selectedFile.getPath());
 				
+				//Calculating variables with new input file.
 				jobInput = ReadJobS.inputJobMatrix(); 
 				jobN = ReadJobS.inputJobN();
 				toolN = ReadJobS.inputToolN();
 				
+				//Settinf pane.
 				this.setContentPane(accueil());
 				this.setVisible(true);
 				
 			}
 		}
 		else if(source == showOrders){
+			//Clear AL in case it is not empty to avoid duplicatas.
 			alOrders.clear();
 			int jobN = ReadJobS.inputJobN();
 			
+			//Simple 1..n tab.
 			int[] input = new int[jobN];
 			for (int i=0; i<jobN; i++){
 				input[i]=i+1;
 			}
 			
+			//Stocking orders in arraylist.
 			Permutations.jobSequences(0, input, alOrders);
 			
+			//Setting pane.
 			this.setContentPane(showOrders());
 			this.setResizable(true);
 			this.setVisible(true);
 			
 		}
 		else if(source == backHome){
+			
+			//Return to home (set pane home).
 			this.setContentPane(accueil());
 			this.setVisible(true);
 			alOrders = new ArrayList<int[]>();
 		}
 		else if(source == backList){
+			
+			//Return to list.
 			this.setContentPane(showOrders());
 			this.setVisible(true);
 		}
 		else if(source.getClass() == OrderButton.class){
+			
+			//Used when the user press an orderButton (on the order List).
+			//Calculates cost of the order.
 			OrderButton temp = (OrderButton)source;
 			int cost = JobS.JobSCostExtBIS(jobInput.getJobS(), alOrders.get(temp.getID()));  
 			System.out.println(cost);
