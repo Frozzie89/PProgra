@@ -56,7 +56,7 @@ public class PPMain {
 //		System.out.println(seqC);
 //		int[] tab1 = {1,2,3,4,6};
 //		int[] tab2 = new int[5];
-//		JobS.fillTab(tab2, tab1);
+//		JobS.fillTab(tab2, tab1);//
 //		System.out.println(Arrays.toString(tab2));
 //		
 

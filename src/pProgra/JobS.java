@@ -278,7 +278,7 @@ public class JobS {
 					indexData++;
 				}
 			}
-			n -= nZeros;
+			n -= nZeros;//
 			return n;
 		}
 		
