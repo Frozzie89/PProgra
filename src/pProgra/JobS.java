@@ -47,6 +47,7 @@ public class JobS {
 	
 	//Fill line
 	public static void fillLine(int[][] tab1, int[]tab2, int lineIndex){ //Tab1 is the array to fill, tab2 is the source.
+		
 		if(tab1.length == tab2.length){
 			for(int i = 0; i<tab1.length; i++){
 				tab1[i][lineIndex]=tab2[i];
@@ -55,10 +56,12 @@ public class JobS {
 		else{
 			System.out.println("Les tableaux doivent être de la même taille (JobS/fillLine).");
 		}
+		
 	}
 
 	//Fill column
 	public static void fillColumn(int[][] tab1, int[]tab2, int columnIndex){ //Tab1 is the array to fill, tab2 is the source.
+		
 		if(tab1[0].length == tab2.length){
 			for(int i = 0; i<tab1.length; i++){
 				tab1[columnIndex][i]=tab2[i];
@@ -67,10 +70,12 @@ public class JobS {
 		else{
 			System.out.println("Les tableaux doivent être de la même taille (JobS/fillColumn).");
 		}
+		
 	}
 	
 	//Fill Line
 	public static void fillLine(int[] tab1, int[]tab2){ //Tab1 is the array to fill, tab2 is the source.
+		
 		if(tab1.length == tab2.length){
 			for(int i = 0; i<tab1.length; i++){
 				tab1[i]=tab2[i];
@@ -79,10 +84,12 @@ public class JobS {
 		else{
 			System.out.println("Les tableaux doivent être de la même taille (JobS/fillLine).");
 		}
+		
 	}
 	
 	//Fill column
 		public static void fillColumn(int[] tab1, int[]tab2){ //Tab1 is the array to fill, tab2 is the source.
+			
 			if(tab1.length == tab2.length){
 				for(int i = 0; i<tab1.length; i++){
 					tab1[i]=tab2[i];
@@ -91,41 +98,61 @@ public class JobS {
 			else{
 				System.out.println("Les tableaux doivent être de la même taille (JobS/fillColumn).");
 			}
+			
 		}
 		
 		//used in method below. (getOrderMatrix)
 	private static void fillTab(int[] tab1, int[] tab2){ //tab1 is the tab to fill.
+		
+		//Check tabs are same size (prevent out of bounds errors).
 		if(tab1.length == tab2.length){
+			
+			//Copies second tab in forst tab.
 			for(int i=0; i<tab1.length; i++){
 				tab1[i] = tab2[i];
 			}
 		}
+		
 	}
 	//used below, fills a line in a integer dual tab.
 	private static void fillTabCol(int[][] tab1, int[] tab2, int index){
+		
+		//Fills column.
 		for(int i=0; i<tab1[0].length; i++){
 			tab1[index][i] = tab2[i];
 		}
-	}
-	//Returns dual tab (matrix of the order)
-	public static int[][] getOrderMatrix(int ID, ArrayList<int[]> alOrders, JobS input){
-		int[] order = alOrders.get(ID);
-		int[] tempTab = new int[ReadJobS.inputToolN()];
-		int[][] matrix = new int[ReadJobS.inputJobN()][ReadJobS.inputToolN()];
-		int[][] inputMatrix = input.jobS;
 		
+	}
+	//Returns the tool matrix of the order alOrders.get(ID) 
+	public static int[][] getOrderMatrix(int ID, ArrayList<int[]> alOrders, JobS input){
+		
+		//Creating necessary tabs.
+		int[] order = alOrders.get(ID); //Stocks order
+		int[] tempTab = new int[ReadJobS.inputToolN()]; //Used later to fill the matrix.
+		int[][] matrix = new int[ReadJobS.inputJobN()][ReadJobS.inputToolN()]; //Order matrix (returned tab)
+		int[][] inputMatrix = input.jobS; //Input matrix.
+		
+		//Actionsfor each column on matrix.
 		for(int i = 0; i<matrix.length;i++){
+			
+			//Fills tempTab with the right tab.
 			fillTab(tempTab, inputMatrix[order[i]-1]);
+			//Fills matric with tempTab.
 			fillTabCol(matrix, tempTab, i);
 		}
 		return matrix;
 	}
 	//Gives the index of the corresponding job (example : [1,2,3] and [1,3,2] with index 1 will return 2 (position of integer 2 in the second array).
 	public static int getColIndex(int[] j1, int[] j2, int indexJ1){  
+		
+		//Necessary variables.
 		int numb = j1[indexJ1];
 		int index = -1;
 		
+		//Search for the right index.
 		for(int i=0; i<j2.length;i++){
+			
+			//If found, returns it and break the loop.
 			if(j2[i] == numb){
 				index = i;
 				break;
@@ -136,8 +163,11 @@ public class JobS {
 	
 	//return the tab with index from this JobS job sequence. (vertical)
 	public int[] selectTabIndex(int index){ 
+		
+		//Tab used to stock the return.
 		int[] tab = new int [this.jobS[0].length];
 		
+		//Filling the tab.
 		for(int i=0; i<this.jobS[0].length;i++){
 			tab[i] = this.jobS[index][i];
 		}
@@ -146,8 +176,9 @@ public class JobS {
 
 	/////////////////////////////////////////////////////////////////////////// 
 	public static int numberCounter(int[] tab, int number){						// Returns the amount of same numbers in a tab.
-		int counter = 0;
+		int counter = 0; //Simple counter.
 		
+		//For each part of the tab, counter++ if the number is what we are searching for.
 		for(int i=0; i<tab.length; i++){
 			if(tab[i] == number)
 				counter++;
@@ -167,101 +198,38 @@ public class JobS {
 	/////////////////////////////////////////////////////////////////////
 	//Returns the Cost of JobS (only use this if both JobS and JobOrder are filled).
 	public int JobSCost(){
-		int counter = 0;
-		int add = 0;
 		
+		//Necessary variables .
+		int counter = 0; //Counter.
+		int add = 0; //Do calculations here before adding to counter.
+		
+		//Calcultates cost by pair of columns.
 		for(int i=0; i<this.jobS.length-1; i++){
 			add = compareTwoCol(this, this, i, i+1);
 			counter += add;
 		}
+		
 		return counter;
 	}
 	
-	private static boolean isInTab(int[] tab, int number){ //True if number is in tab, false else.
-		boolean b = false;
-		
-		for(int i=0; i<tab.length; i++){
-			if(tab[i] == number)
-				b = true;
-		}
-		return b;
-	}
+
 	
-	//Returns an arrayList containing the numbers that are in both tabs.
-	public static ArrayList<Integer> diffNumbers(ArrayList<Integer> al, int[] tab1, int[] tab2){
-		al.clear();
-		for(int i=0; i<tab1.length; i++){
-			if(isInTab(tab2, tab1[i]) == false){
-				al.add(tab1[i]);
-			}
-		}
-		return al;
-	}
-	
-	//Sets the first temp tab (always index0).
-	public static void setFirstTempTab(int[][] matrix, int[] temp, int[] order){
-		int firstIndex = order[0] - 1;
-		for(int i=0; i<matrix[firstIndex].length;i++){
-			temp[i] = matrix[firstIndex][i];
-		}
-	}
-	
-	//Goes pair with compareTwoCol. Sets the temporary tab (keeps the old tool if no new tool is necessary). If the new number is a 0, then it will search for a number that isn't already in the upcoming tab and put it in. (Equals letting an old tool in the machine when you don't need all places for the job).
-	public static void setTempTab(int[][] matrix, int[] temp, int index1){ // WARNING : DO NOT USE THIS FOR THE FIRST TEMP TAB SET, THIS IS A SWAPPING METHOD, WON'T WORK IF THE TAB IS EMPTY.
-		int temp2[] = temp;
-		int counter = 0; 
-		//Checking which numbers are from temp2 but not in upcoming temporary tab.
-		ArrayList<Integer> alDiff = new ArrayList<Integer>();
-		diffNumbers(alDiff, temp2, matrix[index1]);
-		
-		for(int i=0; i<temp.length; i++){ //For each part of the tab does the operations.
-			if(matrix[index1][i] != 0){ //If the number isn't 0, sets it to the number of the matrix[][i].
-				temp[i] = matrix[index1][i]; 
-			}
-			else{ //If the number is 0, set it to a number that isn't already in the tab (from previous temporary tab (stocked in temp2)).
-				if(counter<alDiff.size()){
-					temp[i] = alDiff.get(counter);
-					counter++;
-				}
-				else{ //If all different numbers are used, place 0 instead.
-					temp[i] = 0;
-				}
-				
-				}
-			}
-			//Ordering tab.
-			Permutations.orderTab(temp);
-		}
-		
-	
-	//Cost between two cols. Matrix is the input matrix, temp is the temp tab used to stock temporary tabs, index 2 is second column.
-	public static int compareTwoColBIS(int [][] matrix, int[] temp, int[] order, int index2){
-		int length = temp.length;
-//		System.out.println(Arrays.toString(temp));
-//		System.out.println(length);
-		for(int i=0; i<temp.length; i++){
-			if(matrix[(order[index2]-1)][i] != 0){
-//				System.out.println("iii");
-				if(isInTab(temp, matrix[(order[index2]-1)][i]) == true){
-//					System.out.println("ooo");
-					length --;
-				}
-			}
-			else{
-//				System.out.println("haha");
-				length --;
-			}
-		}
-//		System.out.println("end" +length);
-		return length;
-		
-	}
 	
 		public static int compareTwoCol(JobS j1, JobS j2, int index1, int index2){ 
+			
+			//Index used in the while loop.
 			int indexData = 0;													 // This method allows you to use multiple times the same tool and will still work. Example : [1,2,2,3]
+			
+			//Cost, starts at maximum capacity.
 			int n = j1.jobS[index1].length;										 // n = the length of the tab. Calculates numbers of same integers in the first tab as j and in the second tab as k. (except for 0's)
+			
+			//Numbers of zeros
 			int nZeros = numberCounter(j2.jobS[index2], 0);						 // If j > k then n-=k, but if j<=k then subtract  j to n. Then subtract the numbers of 0's in tab2 to n. The n left at the end is the number of changes necessary, or the cost.
+			
+			//Actions for each part of the tab.
 			while(indexData<j1.jobS[index1].length){
+				
+				//If the number isn't 0 then calculates j and k and according modifications to n.
 				if(j1.jobS[index1][indexData] != 0){
 					int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
 					int k = numberCounter(j2.jobS[index2], j1.jobS[index1][indexData]);
@@ -274,10 +242,14 @@ public class JobS {
 						
 					indexData += j;
 				}
+				
+				//If number is 0 then doesn't calculates j and k but index++.
 				else{
 					indexData++;
 				}
 			}
+			
+			//Substract nZeros to n to get final cost.
 			n -= nZeros;//
 			return n;
 		}
@@ -321,29 +293,13 @@ public class JobS {
 		return cost;
 	}
 	
-	public static int JobSCostExtBIS(int[][] inputMatrix, int[] order){
-		int cost = 0;
-		int[] temp = new int[inputMatrix[0].length];
-		setFirstTempTab(inputMatrix, temp, order);
-		cost += compareTwoColBIS
-				
-				(inputMatrix, temp, order, 1);
-		
-		for(int i=1; i<inputMatrix.length-1; i++){
-			setTempTab(inputMatrix, temp, i);
-			cost += compareTwoColBIS(inputMatrix, temp, order, i+1);
-		}
-		
-		cost += (inputMatrix[0].length - numberCounter(inputMatrix[0], 0));
-		
-		return cost;
-	}
-	
 	// Calculate all orders' costs then stock them in an ArrayList. The second ArrayList must be empty. Order and costs will be affected at the same index of corresponding ArrayList. j1 is the input matrix.
 	public static void StockJobSCost(JobS j1, ArrayList<int[]> alOrders, ArrayList<Integer> alCosts){
 		
 		//Check alCosts isEmpty.
 		alCosts.clear();
+			
+		//Stocks one by one in alCosts.
 			for(int i=0; i<alOrders.size(); i++){
 				alCosts.add(i, JobSCostExt(j1, alOrders.get(i)));
 			}
@@ -359,6 +315,8 @@ public class JobS {
 		}
 		return index;
 	}
+	
+	//Simple toString.
 	public String toString() {
 		return "jobOrder=" + Arrays.toString(jobOrder) + ", jobS=" + Arrays.deepToString(jobS);
 	}
