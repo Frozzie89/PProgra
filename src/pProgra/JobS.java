@@ -6,6 +6,10 @@ import java.util.Arrays;
 public class JobS {
 	private int[] jobOrder;
 	private int[][] jobS;
+	private int cost;
+	private static JobS jobSInput = ReadJobS.inputJobMatrix();
+	private static int jobN = ReadJobS.inputJobN();
+	private static int toolN = ReadJobS.inputToolN();
 
 	//Constructors
 	public JobS(int[][] jobS) {
@@ -27,6 +31,22 @@ public class JobS {
 		this.jobOrder = tab2;
 	}
 	
+	public static JobS JobSBuild(int[] order){
+		//creating jobS with order as input.
+			
+		int[] tempTab = new int[ReadJobS.inputToolN()]; //Used later to fill the matrix.
+		int[][] matrix = new int[ReadJobS.inputJobN()][ReadJobS.inputToolN()]; //Order matrix (returned tab)
+		int[][] inputMatrix = jobSInput.jobS; //Input matrix.
+		
+		for(int i=0; i<order.length; i++){
+			//Fills tempTab with the right tab.
+			fillTab(tempTab, inputMatrix[order[i]-1]);
+			//Fills matrix with tempTab.
+			fillTabCol(matrix, tempTab, i);
+		}
+		return new JobS(order, matrix);
+	}
+	
 	//Getters and Setters
 	
 	public int[] getJobOrder() {
@@ -37,12 +57,33 @@ public class JobS {
 		this.jobOrder = jobOrder;
 	}
 	
+	public int getCost() {
+		return cost;
+	}
+	
+	public void setCost(int cost) {
+		this.cost = cost;
+	}
+	
 	public int[][] getJobS() {
 		return jobS;
 	}
 	
 	public void setJobS(int[][] jobS) {
 		this.jobS = jobS;
+	}
+	
+	//Clone method 
+	public static JobS JobSCloner(JobS original){
+		//Creating clone
+		JobS jCloned = new JobS(jobN, toolN);
+		//Filling matrix 
+		for(int i=0; i<original.getJobS().length; i++){
+			jCloned.jobS[i] = Arrays.copyOf(original.getJobS()[i], original.getJobS()[i].length);
+		}
+		//Filling order
+		jCloned.jobOrder = Arrays.copyOf(original.jobOrder, original.jobOrder.length);
+		return jCloned;
 	}
 	
 	//Fill line
@@ -203,16 +244,21 @@ public class JobS {
 		int counter = 0; //Counter.
 		int add = 0; //Do calculations here before adding to counter.
 		
+		//Adds the first row cost. (first job) 
+		counter += (this.jobS[0].length) - numberCounter(this.jobS[0], 0); //Length - numbers of 0's.
+		
 		//Calcultates cost by pair of columns.
 		for(int i=0; i<this.jobS.length-1; i++){
-			add = compareTwoCol(this, this, i, i+1);
+			add = compareTwoCol(this, i, i+1);
 			counter += add;
 		}
+		
+		
 		
 		return counter;
 	}
 	
-
+	
 	
 	
 		public static int compareTwoCol(JobS j1, JobS j2, int index1, int index2){ 
@@ -222,63 +268,77 @@ public class JobS {
 			
 			//Cost, starts at maximum capacity.
 			int n = j1.jobS[index1].length;										 // n = the length of the tab. Calculates numbers of same integers in the first tab as j and in the second tab as k. (except for 0's)
-			
-			//Numbers of zeros
-			int nZeros = numberCounter(j2.jobS[index2], 0);						 // If j > k then n-=k, but if j<=k then subtract  j to n. Then subtract the numbers of 0's in tab2 to n. The n left at the end is the number of changes necessary, or the cost.
+																				 // If j > k then n-=k, but if j<=k then subtract  j to n. Then subtract the numbers of 0's in tab2 to n. The n left at the end is the number of changes necessary, or the cost.
 			
 			//Actions for each part of the tab.
 			while(indexData<j1.jobS[index1].length){
 				
 				//If the number isn't 0 then calculates j and k and according modifications to n.
-				if(j1.jobS[index1][indexData] != 0){
+				
 					int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
 					int k = numberCounter(j2.jobS[index2], j1.jobS[index1][indexData]);
+					
 						if(j <= k){
 							n-=j;
 						}
-						else{
+						
+						if(j > k){
 							n-=k;
 						}
 						
 					indexData += j;
-				}
-				
-				//If number is 0 then doesn't calculates j and k but index++.
-				else{
-					indexData++;
-				}
 			}
-			
-			//Substract nZeros to n to get final cost.
-			n -= nZeros;//
 			return n;
 		}
 		
 		public static int compareTwoCol(JobS j1, int index1, int index2){ //Polymorph method above for only 1 JobS as parameter.
 			int indexData = 0;													
 			int n = j1.jobS[index1].length;										 
-			int nZeros = numberCounter(j1.jobS[index2], 0);	
+			
 			
 			while(indexData<j1.jobS[index1].length){
-				if(j1.jobS[index1][indexData] != 0){
+				
 					int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
 					int k = numberCounter(j1.jobS[index2], j1.jobS[index1][indexData]);
+					
 						if(j <= k){
 							n-=j;
 						}
+						
+						if(j > k){
+							n-=k;
+						}
+					indexData += j;
+			}
+			
+			return n;
+		}
+		
+		public static int compareTwoCol(int[] tab1, int[] tab2){
+			
+			int indexData = 0;													
+			int n = tab1.length;										 	
+			
+			while(indexData<tab1.length){
+				
+					int j = numberCounter(tab1, tab1[indexData]);
+					int k = numberCounter(tab2, tab1[indexData]);
+					
+						if(j <= k){
+							n-=j;
+						}
+						
 						if(j > k){
 							n-=k;
 						}
 						
 					indexData += j;
-				}
-				else{
-					indexData++;
-				}
+				
 			}
-			n -= nZeros;
 			return n;
+			
 		}
+		
 		//Used to calculate cost of the different orders. This method allows us to compare the costs by using only the input tab as reference, so we don't need to create n JobS objects, resulting in less memory used.
 		//j1 will be the input JobS for our project.
 	public static int JobSCostExt(JobS j1, int[] seq){ 
@@ -307,10 +367,10 @@ public class JobS {
 	}
 	
 	//Return the index of the best order. (minimize costs)
-	public static int getMinCost(ArrayList<Integer> alCosts){
+	public static int getMinCost(ArrayList<JobS> alJobs){
 		int index = 0;
-		for(int i=1; i<alCosts.size(); i++){
-			if(alCosts.get(index) > alCosts.get(i))
+		for(int i=1; i<alJobs.size(); i++){
+			if(alJobs.get(index).getCost() > alJobs.get(i).getCost())
 				index = i;
 		}
 		return index;

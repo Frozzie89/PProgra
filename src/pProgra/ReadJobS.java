@@ -30,7 +30,7 @@ public class ReadJobS {
 			br.close();
 			
 		} catch (IOException e) {
-			System.out.println("File not found exception in inputToN.");
+			System.out.println("File not found exception in inputToolN.");
 		}
 		return toolN; 	
 	}
@@ -55,7 +55,13 @@ public class ReadJobS {
 		return jobN; 	
 	}
 	
-	
+	public static int[] basicOrder(int n){
+		int[] a = new int[n];
+		for (int i=0; i<n; i++){
+			a[i]=i+1;
+		}
+		return a;
+	}
 	public static JobS inputJobMatrix(){
 		String line = ""; // Line in tokenizer
 		int jobN = inputJobN();
@@ -74,10 +80,8 @@ public class ReadJobS {
 			}
 			
 			//Instancing tab for Job Order 1...n
-			int[] a = new int[jobN];
-			for (int i=0; i<jobN; i++){
-				a[i]=i+1;
-			}
+			int[] a = basicOrder(jobN);
+			
 			//Filling Order tab with Job order
 			JobS.fillLine(tabFillOrder, a);
 			//Reading the matrix line by line and filling tab line
@@ -93,6 +97,11 @@ public class ReadJobS {
 				
 				
 			}
+			
+			for(int i=0; i<tabFill.length; i++){
+				
+			}
+			
 			inputJobS.setJobS(tabFill);
 			inputJobS.setJobOrder(tabFillOrder);
 			br.close();
