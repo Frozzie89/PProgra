@@ -82,14 +82,10 @@ private static int toolN = ReadJobS.inputToolN();
 							//Add new matrix to arraylist
 							al.add(jCloned);
 							}
-							System.out.println("ggggg");
-							
-									//al.add(MATRICE MODIFIEE) (FAIRE METHODE POUR LA MODIFIER)
 						}
-						System.out.println("ooo");
-					}System.out.println("fff");
-				}System.out.println("ppp");
-			}System.out.println("zzz");
+					}
+				}
+			}
 		}
 //		//Removing the matrix (all) containing 0.
 //		boolean check = false;
@@ -109,25 +105,9 @@ private static int toolN = ReadJobS.inputToolN();
 //		}
 	}
 	
+	//Modify 1 number in a matrix
 	public static void jobSMod(JobS j1, int i, int col, int line){
 		j1.getJobS()[col][line] = i;
-	}
-		
-	
-	public static int changeColToRef(int[][] tab1, int[][] tab2, int columnIndex1, int columnIndex2){ // tab1 is the one to change, tab2 is the source.
-		int counter = 0;
-		if(tab1[0].length == tab2[0].length){
-			for(int i=0; i<tab1[0].length;i++){
-				if(tab1[columnIndex1][i] != tab2[columnIndex2][i]){ //Change if the tool is different 
-					tab1[columnIndex1][i] = tab2[columnIndex2][i];
-					counter++;
-				}
-			}
-		}
-		else{
-			System.out.println("Les colonnes doivent être de la même taille.");
-		}
-		return counter;
 	}
 	
 //The 3 following methods will order numbers in the column i (ascending AND placing 0 at the end) (In case the user didn't already do it in the input file this will prevent further problems).

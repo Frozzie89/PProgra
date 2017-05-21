@@ -34,6 +34,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 	private JButton backList; 
 	private JButton export;
 	private JLabel path = new JLabel("Chemin vers le fichier input.");
+	@SuppressWarnings("unused")
 	private JobS jobInput = ReadJobS.inputJobMatrix(); 
 	private int jobN = ReadJobS.inputJobN();
 	private int toolN = ReadJobS.inputToolN();
