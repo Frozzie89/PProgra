@@ -5,13 +5,16 @@ import java.util.Arrays;
 
 public class Permutations {
 
-	public  static void jobSequences(int start, int[] input, ArrayList <JobS> al) { 
+	public  static void jobSequences(int start, int[] input) { 
 		//This method is recursive, it will open multiple instances of the input tab by calling itself and modify them, then stock tab in ArrayList when the operations are done for this tab.
 		//ArrayList must be empty. Basically returns all the switching possibilities between an integers array.
 			//Printing tab if iterations for that specific tab are done
 	        if (start == input.length) {
-	        	al.add(JobS.JobSBuild(Arrays.copyOf(input, input.length))); //Adding JobS to the tab.
+	        	//ADD HERE THINGS TO DO WITH INPUT //TODO
 	        	
+	        	
+	        	
+	        	Gui.alOrders.add(Arrays.copyOf(input, input.length)); //Making a deep copy of the tab ("=" would only copy index and...)
 	        	////////////////////////////////
 	        	// For printing tabs in console.
 	            // for(int x: input){
@@ -44,7 +47,7 @@ public class Permutations {
 		        //////////////////////////////////////////////////
 		        
 		        //Changing numbers
-		        jobSequences(start + 1, input, al);
+		        jobSequences(start + 1, input);
 		        
 		       // Changing numbers
 		        int temp2 = input[i];
@@ -54,58 +57,20 @@ public class Permutations {
 	    }
 	}
 	
-	//Will add every tool keeping possibility to the ArrayList.
-	public static void subJobSequences(ArrayList <JobS> al){
-		//Going trough ArrayList
-		for(int k =0; k< al.size(); k++){
-			//Going trough columns (ignoring first one).
-			for(int i=1; i<Gui.jobN; i++){
-				//Going trough lines 
-				for(int j=0; j<Gui.toolN; j++){
-					//Check for 0's.
-					if(al.get(k).getJobS()[i][j] == 0){
-						//Simulate to keep each tool from the previous job
-						for(int m=0; m<Gui.toolN; m++){
-							//Cloning matrix
-							JobS jCloned = JobS.JobSCloner(al.get(k));
-							//Modifying matrix 
-								//Checks if the number isn't 0 (avoid infinite loop) and isn't already in the column (faster overall).
-							if(jCloned.getJobS()[i-1][m] != 0 && (  JobS.numberCounter(jCloned.getJobS()[i], jCloned.getJobS()[i][j]) > 0)  ){
-								jCloned.getJobS()[i][j] = jCloned.getJobS()[i-1][m];
-								
-							//Ordering matrix 
-							for(int ibis=0; ibis<Gui.jobN; ibis++){
-								orderTab(jCloned.getJobS()[ibis]);
-							}
-							//Add new matrix to arraylist
-							al.add(jCloned);
-							}
-						}
-					}
+	public static int changeColToRef(int[][] tab1, int[][] tab2, int columnIndex1, int columnIndex2){ // tab1 is the one to change, tab2 is the source.
+		int counter = 0;
+		if(tab1[0].length == tab2[0].length){
+			for(int i=0; i<tab1[0].length;i++){
+				if(tab1[columnIndex1][i] != tab2[columnIndex2][i]){ //Change if the tool is different 
+					tab1[columnIndex1][i] = tab2[columnIndex2][i];
+					counter++;
 				}
 			}
 		}
-		//Removing the matrix (all) containing 0.
-//		boolean check = false;
-//		for(int k=0; k<al.size(); k++){
-//			for(int i=1; i<Gui.jobN; i++){
-//				for(int j=0; j<Gui.toolN; j++){
-//					if(al.get(k).getJobS()[i][j] == 0){
-//						check = true;
-//					}
-//				}
-//			}
-//			if(check == true){
-//				al.remove(k); 
-//				k--;
-//				check = false; 
-//			}
-//		}
-	}
-	
-	//Modify 1 number in a matrix
-	public static void jobSMod(JobS j1, int i, int col, int line){
-		j1.getJobS()[col][line] = i;
+		else{
+			System.out.println("Les colonnes doivent être de la même taille.");
+		}
+		return counter;
 	}
 	
 //The 3 following methods will order numbers in the column i (ascending AND placing 0 at the end) (In case the user didn't already do it in the input file this will prevent further problems).
@@ -138,7 +103,7 @@ public class Permutations {
 	}
 
 	private static void reverse(int[] tab, int start, int end) { //Reverse numbers in a tab, used in rotate method.
-	    while (start < end) {	
+	    while (start < end) {
 	        int temp = tab[start];
 	        tab[start] = tab[end];
 	        tab[end] = temp;

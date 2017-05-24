@@ -4,7 +4,6 @@ import java.util.StringTokenizer;
 public class ReadJobS {
 //This class is designed to handle the reading of the input. inputName variable is static and is used to set your filename.
 	
-	
 	private static String inputName = "input.txt";
 
 	//Getters and Setters
@@ -31,7 +30,7 @@ public class ReadJobS {
 			br.close();
 			
 		} catch (IOException e) {
-			System.out.println("File not found exception in inputToolN.");
+			System.out.println("File not found exception in inputToN.");
 		}
 		return toolN; 	
 	}
@@ -56,13 +55,7 @@ public class ReadJobS {
 		return jobN; 	
 	}
 	
-	public static int[] basicOrder(int n){
-		int[] a = new int[n];
-		for (int i=0; i<n; i++){
-			a[i]=i+1;
-		}
-		return a;
-	}
+	
 	public static JobS inputJobMatrix(){
 		String line = ""; // Line in tokenizer
 		int jobN = inputJobN();
@@ -81,10 +74,12 @@ public class ReadJobS {
 			}
 			
 			//Instancing tab for Job Order 1...n
-			int[] a = basicOrder(jobN);
-			
+			int[] a = new int[jobN];
+			for (int i=0; i<jobN; i++){
+				a[i]=i+1;
+			}
 			//Filling Order tab with Job order
-			JobS.fillTab(tabFillOrder, a);
+			JobS.fillLine(tabFillOrder, a);
 			//Reading the matrix line by line and filling tab line
 			for(int j=0; j<toolN; j++){
 				StringTokenizer st = new StringTokenizer(line);
@@ -98,11 +93,6 @@ public class ReadJobS {
 				
 				
 			}
-			
-			for(int i=0; i<tabFill.length; i++){
-				
-			}
-			
 			inputJobS.setJobS(tabFill);
 			inputJobS.setJobOrder(tabFillOrder);
 			br.close();
