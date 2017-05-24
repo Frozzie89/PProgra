@@ -36,8 +36,8 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 	private JLabel path = new JLabel("Chemin vers le fichier input.");
 	@SuppressWarnings("unused")
 	private JobS jobInput = ReadJobS.inputJobMatrix(); 
-	private int jobN = ReadJobS.inputJobN();
-	private int toolN = ReadJobS.inputToolN();
+	public static int jobN = ReadJobS.inputJobN();
+	public static int toolN = ReadJobS.inputToolN();
 	
 	//Basic GUI settings. (title, home panel, ...)
 	public Gui(){
@@ -123,7 +123,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		JPanel topResult = new JPanel();
 		JPanel bottomResult = new JPanel(); 
 		
-		int width = ReadJobS.inputJobN();
+		int width = jobN;
 		
 		container.setLayout(new BorderLayout()); //Setting container layout.
 		details.setLayout(new GridLayout(0, width)); //Setting second panel layout.
@@ -287,7 +287,6 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		else if(source == showOrders){
 			//Clear AL in case it is not empty to avoid duplicatas.
 			alJobs.clear();
-			int jobN = ReadJobS.inputJobN();
 			
 			//Simple 1..n tab.
 			int[] input = new int[jobN];
@@ -340,8 +339,13 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			//Clearing in case they're not empty.
 			alJobs.clear();
 			
+			jobN = ReadJobS.inputJobN();
 			int minIndex; //Will stock the best order index.
 			int[] input = new int[jobN]; //Just a tab 1..n to use as a parameter of jobSequences.
+			
+			
+			System.out.println(jobN + " " + toolN);
+			
 			
 			for (int i=0; i<jobN; i++){ 
 				input[i]=i+1;

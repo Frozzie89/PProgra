@@ -8,8 +8,7 @@ public class JobS {
 	private int[][] jobS;
 	private int cost;
 	private static JobS jobSInput = ReadJobS.inputJobMatrix();
-	private static int jobN = ReadJobS.inputJobN();
-	private static int toolN = ReadJobS.inputToolN();
+
 
 	//Constructors
 	public JobS(int[][] jobS) {
@@ -34,9 +33,10 @@ public class JobS {
 	//Build a JobS object with the order (from matric in input file).
 	public static JobS JobSBuild(int[] order){
 		//creating jobS with order as input.
-			
-		int[] tempTab = new int[ReadJobS.inputToolN()]; //Used later to fill the matrix.
-		int[][] matrix = new int[ReadJobS.inputJobN()][ReadJobS.inputToolN()]; //Order matrix (returned tab)
+		jobSInput = ReadJobS.inputJobMatrix();
+		
+		int[] tempTab = new int[Gui.toolN]; //Used later to fill the matrix.
+		int[][] matrix = new int[Gui.jobN][Gui.toolN]; //Order matrix (returned tab)
 		int[][] inputMatrix = jobSInput.jobS; //Input matrix.
 		
 		for(int i=0; i<order.length; i++){
@@ -81,7 +81,7 @@ public class JobS {
 	public static JobS JobSCloner(JobS original){
 		
 		//Creating clone
-		JobS jCloned = new JobS(jobN, toolN);
+		JobS jCloned = new JobS(Gui.jobN, Gui.toolN);
 		
 		//Filling matrix 
 		for(int i=0; i<original.getJobS().length; i++){
@@ -134,7 +134,10 @@ public class JobS {
 
 	//Returns the Cost of JobS (only use this if both JobS and JobOrder are filled).
 	public int JobSCost(){
-		
+		//Ordering tab 
+		for(int i=0; i<this.jobS.length; i++){
+			Permutations.orderTab(this.jobS[i]);
+		}
 		//Necessary variables .
 		int counter = 0; //Counter.
 		int add = 0; //Do calculations here before adding to counter.

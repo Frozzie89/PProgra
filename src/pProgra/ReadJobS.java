@@ -4,6 +4,7 @@ import java.util.StringTokenizer;
 public class ReadJobS {
 //This class is designed to handle the reading of the input. inputName variable is static and is used to set your filename.
 	
+	
 	private static String inputName = "input.txt";
 
 	//Getters and Setters

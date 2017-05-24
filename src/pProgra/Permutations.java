@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Permutations {
-private static int jobN = ReadJobS.inputJobN();
-private static int toolN = ReadJobS.inputToolN();
+
 	public  static void jobSequences(int start, int[] input, ArrayList <JobS> al) { 
 		//This method is recursive, it will open multiple instances of the input tab by calling itself and modify them, then stock tab in ArrayList when the operations are done for this tab.
 		//ArrayList must be empty. Basically returns all the switching possibilities between an integers array.
@@ -57,17 +56,16 @@ private static int toolN = ReadJobS.inputToolN();
 	
 	//Will add every tool keeping possibility to the ArrayList.
 	public static void subJobSequences(ArrayList <JobS> al){
-		int basealSize = al.size();
 		//Going trough ArrayList
 		for(int k =0; k< al.size(); k++){
 			//Going trough columns (ignoring first one).
-			for(int i=1; i<jobN; i++){
+			for(int i=1; i<Gui.jobN; i++){
 				//Going trough lines 
-				for(int j=0; j<toolN; j++){
+				for(int j=0; j<Gui.toolN; j++){
 					//Check for 0's.
 					if(al.get(k).getJobS()[i][j] == 0){
 						//Simulate to keep each tool from the previous job
-						for(int m=0; m<toolN; m++){
+						for(int m=0; m<Gui.toolN; m++){
 							//Cloning matrix
 							JobS jCloned = JobS.JobSCloner(al.get(k));
 							//Modifying matrix 
@@ -76,7 +74,7 @@ private static int toolN = ReadJobS.inputToolN();
 								jCloned.getJobS()[i][j] = jCloned.getJobS()[i-1][m];
 								
 							//Ordering matrix 
-							for(int ibis=0; ibis<jobN; ibis++){
+							for(int ibis=0; ibis<Gui.jobN; ibis++){
 								orderTab(jCloned.getJobS()[ibis]);
 							}
 							//Add new matrix to arraylist
@@ -87,11 +85,11 @@ private static int toolN = ReadJobS.inputToolN();
 				}
 			}
 		}
-//		//Removing the matrix (all) containing 0.
+		//Removing the matrix (all) containing 0.
 //		boolean check = false;
 //		for(int k=0; k<al.size(); k++){
-//			for(int i=1; i<jobN; i++){
-//				for(int j=0; j<toolN; j++){
+//			for(int i=1; i<Gui.jobN; i++){
+//				for(int j=0; j<Gui.toolN; j++){
 //					if(al.get(k).getJobS()[i][j] == 0){
 //						check = true;
 //					}
