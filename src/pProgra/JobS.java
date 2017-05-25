@@ -7,6 +7,7 @@ public class JobS {
 	private int[] jobOrder;
 	private int[][] jobS;
 	public static ArrayList<Integer> tools = new ArrayList<Integer>();
+	
 	//Constructors
 	public JobS(int[][] jobS) {
 		super();
@@ -44,34 +45,7 @@ public class JobS {
 	public void setJobS(int[][] jobS) {
 		this.jobS = jobS;
 	}
-	
-	//Fill line
-	public static void fillLine(int[][] tab1, int[]tab2, int lineIndex){ //Tab1 is the array to fill, tab2 is the source.
 		
-		if(tab1.length == tab2.length){
-			for(int i = 0; i<tab1.length; i++){
-				tab1[i][lineIndex]=tab2[i];
-			}
-		}
-		else{
-			System.out.println("Les tableaux doivent être de la même taille (JobS/fillLine).");
-		}
-		
-	}
-
-	//Fill column
-	public static void fillColumn(int[][] tab1, int[]tab2, int columnIndex){ //Tab1 is the array to fill, tab2 is the source.
-		
-		if(tab1[0].length == tab2.length){
-			for(int i = 0; i<tab1.length; i++){
-				tab1[columnIndex][i]=tab2[i];
-			}
-		}
-		else{
-			System.out.println("Les tableaux doivent être de la même taille (JobS/fillColumn).");
-		}
-		
-	}
 	
 	//Fill Line
 	public static void fillLine(int[] tab1, int[]tab2){ //Tab1 is the array to fill, tab2 is the source.
@@ -87,20 +61,6 @@ public class JobS {
 		
 	}
 	
-	//Fill column
-		public static void fillColumn(int[] tab1, int[]tab2){ //Tab1 is the array to fill, tab2 is the source.
-			
-			if(tab1.length == tab2.length){
-				for(int i = 0; i<tab1.length; i++){
-					tab1[i]=tab2[i];
-				}
-			}
-			else{
-				System.out.println("Les tableaux doivent être de la même taille (JobS/fillColumn).");
-			}
-			
-		}
-		
 		//used in method below. (getOrderMatrix)
 	private static void fillTab(int[] tab1, int[] tab2){ //tab1 is the tab to fill.
 		
@@ -186,100 +146,49 @@ public class JobS {
 		return counter;
 	}
 	
-	public static int numberCounter(int[] tab, int number, int startIndex){
-		int counter = 0;
-		
-		for(int i=startIndex; i<tab.length; i++){
-			if(tab[i] == number)
-				counter++;
-		}
-		return counter;
-	}
-	
 	public static boolean isIn(int[] tab, int number){ //Return true if the number is in the tab.
 		if(numberCounter(tab, number)>0){
 			return true; 
 		}
 		return false;
 	}
-	/////////////////////////////////////////////////////////////////////
-	//Returns the Cost of JobS (only use this if both JobS and JobOrder are filled).
-	public int JobSCost(){
-		
-		//Necessary variables .
-		int counter = 0; //Counter.
-		int add = 0; //Do calculations here before adding to counter.
-		
-		//Calcultates cost by pair of columns.
-		for(int i=0; i<this.jobS.length-1; i++){
-			add = compareTwoCol(this, this, i, i+1);
-			counter += add;
-		}
-		
-		return counter;
-	}
 	
-
-	
-	
-		public static int compareTwoCol(JobS j1, JobS j2, int index1, int index2){ 
+		
+		public static int compareTwoCol(JobS j1, int index1, int index2){ //Polymorph method above for only 1 JobS as parameter. (tools is not used here but i added it anyway for clarity and similarity with the methode under this one.
+			
+			// This method allows you to use multiple times the same tool and will still work. Example : [1,2,2,3]
+			// n = the length of the tab. Calculates numbers of same integers in the first tab as j and in the second tab as k. (except for 0's)
+			// If j > k then n-=k, but if j<=k then subtract  j to n. Then subtract the numbers of 0's in tab2 to n. The n left at the end is the number of changes necessary, or the cost.
 			
 			//Index used in the while loop.
-			int indexData = 0;													 // This method allows you to use multiple times the same tool and will still work. Example : [1,2,2,3]
-			
+			int indexData = 0;				
+													
 			//Cost, starts at maximum capacity.
-			int n = j1.jobS[index1].length;										 // n = the length of the tab. Calculates numbers of same integers in the first tab as j and in the second tab as k. (except for 0's)
+			int cost = j1.jobS[index1].length;	
 			
 			//Numbers of zeros
-			int nZeros = numberCounter(j2.jobS[index2], 0);						 // If j > k then n-=k, but if j<=k then subtract  j to n. Then subtract the numbers of 0's in tab2 to n. The n left at the end is the number of changes necessary, or the cost.
-			
+			int nZeros = numberCounter(j1.jobS[index2], 0);
+		
 			//Actions for each part of the tab.
 			while(indexData<j1.jobS[index1].length){
 				
 				//If the number isn't 0 then calculates j and k and according modifications to n.
 				if(j1.jobS[index1][indexData] != 0){
 					int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
-					int k = numberCounter(j2.jobS[index2], j1.jobS[index1][indexData]);
-						if(j <= k){
-							n-=j;
-						}
-						else{
-							n-=k;
-						}
-						
-					indexData += j;
-				}
-				
-				//If number is 0 then doesn't calculates j and k but index++.
-				else{
-					indexData++;
-				}
-			}
-			
-			//Substract nZeros to n to get final cost.
-			n -= nZeros;//
-			return n;
-		}
-		
-		public static int compareTwoCol(JobS j1, int index1, int index2){ //Polymorph method above for only 1 JobS as parameter. (tools is not used here but i added it anyway for clarity and similarity with the methode under this one.
-			int indexData = 0;												
-			int cost = j1.jobS[index1].length;										 
-			int nZeros = numberCounter(j1.jobS[index2], 0);
-			assert(nZeros >= 0);
-			
-			while(indexData<j1.jobS[index1].length){
-				if(j1.jobS[index1][indexData] != 0){
-					int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
 					int k = numberCounter(j1.jobS[index2], j1.jobS[index1][indexData]);
+					
 						if(j <= k){
 							cost-=j;
 						}
+						
 						if(j > k){
 							cost-=k;
 						}
 						
 					indexData += j;
 				}
+				
+				//If number is 0 then doesn't calculates j and k but index++
 				else{
 					indexData++;
 				}
@@ -288,10 +197,12 @@ public class JobS {
 			return cost;
 		}
 		
-		public static int subCompareTwoCol(JobS j1, int index1, int index2, int indexTab1){ //Polymorph method above for only 1 JobS as parameter.
+		public static int subCompareTwoCol(JobS j1, int index1, int index2, int indexTab1){ //Almost same method as above but with modifications when it encounters a 0.
 			int indexData = 0;												
 			int cost = j1.jobS[index1].length;										 
 			int nZeros = numberCounter(j1.jobS[index2], 0);	
+			
+			//index used under to not do the operations too many times.
 			int tab1Index = 0;
 
 			
@@ -313,14 +224,16 @@ public class JobS {
 					
 				}else{
 			
-					//Initialize 3 tabs
+					//Initialize 3 tabs, stocks them (previous column, actual column and next column).
 					int[] tab1 = j1.jobS[indexTab1];
 					int[] tab2 = j1.jobS[index1];
 					int[] tab3 = j1.jobS[index2];
-					assert(tab2[indexData] == 0);
+					
+					//For every numbers from the first tab (starts at the index so it doesnt count the same tool twice if multiple 0's).
 					for(int i=tab1Index; i<Gui.toolN; i++){
 						tab1Index++;
-						if(isIn(tab3, tab1[i]) == true && isIn(tab2, tab1[i]) == false){ //TODO multiple zeros handle
+						if(isIn(tab3, tab1[i]) == true && isIn(tab2, tab1[i]) == false){ 
+							//Modifications to cost (and -=1 to nzeros because we "change" a 0 to the new tool).
 							nZeros-=1;
 							cost -=2;
 							tools.add(tab1[i]);

@@ -10,7 +10,6 @@ public class Permutations {
 		//ArrayList must be empty. Basically returns all the switching possibilities between an integers array.
 			//Printing tab if iterations for that specific tab are done
 	        if (start == input.length) {
-	        	//ADD HERE THINGS TO DO WITH INPUT //TODO
 	        	System.out.println(".");
 	        	
 	        	
@@ -55,22 +54,6 @@ public class Permutations {
 		        input[start] = temp2;
 	        
 	    }
-	}
-	
-	public static int changeColToRef(int[][] tab1, int[][] tab2, int columnIndex1, int columnIndex2){ // tab1 is the one to change, tab2 is the source.
-		int counter = 0;
-		if(tab1[0].length == tab2[0].length){
-			for(int i=0; i<tab1[0].length;i++){
-				if(tab1[columnIndex1][i] != tab2[columnIndex2][i]){ //Change if the tool is different 
-					tab1[columnIndex1][i] = tab2[columnIndex2][i];
-					counter++;
-				}
-			}
-		}
-		else{
-			System.out.println("Les colonnes doivent être de la même taille.");
-		}
-		return counter;
 	}
 	
 //The 3 following methods will order numbers in the column i (ascending AND placing 0 at the end) (In case the user didn't already do it in the input file this will prevent further problems).
