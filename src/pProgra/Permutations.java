@@ -11,7 +11,7 @@ public class Permutations {
 			//Printing tab if iterations for that specific tab are done
 	        if (start == input.length) {
 	        	//ADD HERE THINGS TO DO WITH INPUT //TODO
-	        	
+	        	System.out.println(".");
 	        	
 	        	
 	        	Gui.alOrders.add(Arrays.copyOf(input, input.length)); //Making a deep copy of the tab ("=" would only copy index and...)

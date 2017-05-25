@@ -26,7 +26,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 	// Instancing those variables as class variables so we can use them in all class.
 	public static ArrayList<int[]> alOrders = new ArrayList<int[]>();
 	public static ArrayList<Integer> alCosts = new ArrayList<Integer>();
-	public static ArrayList<int[]> alTools = new ArrayList<int[]>();
+	public static ArrayList<ArrayList<Integer>> alTools = new ArrayList<ArrayList<Integer>>();
 	private JButton search;
 	private JButton showOrders;
 	private JButton optimizotron;
@@ -169,13 +169,22 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 	
 	@SuppressWarnings("unchecked")
 	private JPanel optiPanel(int minIndex){
-		
+		ArrayList<Integer> toolss = alTools.get(minIndex);
+		System.out.println("ll"+toolss.size());
+		System.out.println(alOrders.size());
+		System.out.println(alCosts.size());
+		System.out.println(alTools.size());
+		for(int i=0; i<toolss.size(); i++){
+			System.out.print(toolss.get(i));
+		}
 		//Creating panels.
 		JPanel container = new JPanel(); 
 		JPanel tab = new JPanel();
 		JPanel bottom = new JPanel();
 		JPanel upperBottom = new JPanel();
 		JPanel lowerBottom = new JPanel();
+		JPanel lowUpperBottom = new JPanel();
+		JPanel upUpperBottom = new JPanel();
 				
 		//Creating buttons.
 		backHome = new JButton("Retour");
@@ -189,24 +198,37 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		backHome.addActionListener(this);
 		export.addActionListener(this);
 		
-		
 		//Setting layouts.
 		container.setLayout(new BorderLayout());
 		tab.setLayout(new GridLayout(toolN+1, jobN));
 		bottom.setLayout(new GridLayout(2,1));
+		upperBottom.setLayout(new GridLayout(2,1));
 		
 		//Upper label 
 		JLabel upperL = new JLabel("Meilleure solution : ");
 		upperL.setHorizontalAlignment(JLabel.CENTER);
 		container.add(upperL, BorderLayout.NORTH);
 		
-		//upperBottom label
+		//upUpperBottom label (Cost)
 		JLabel upperBottomL = new JLabel("Coût :");
-		upperBottom.add(upperBottomL);
+		upUpperBottom.add(upperBottomL);
 		String costStr = " " + alCosts.get(minIndex);
 		JLabel upperBottom2 = new JLabel(costStr);
 		upperBottom2.setForeground(Color.red);
-		upperBottom.add(upperBottom2);
+		upUpperBottom.add(upperBottom2);
+		
+		//lowUpperBottom
+		String toolString = "Outils à garder : [";
+		String tempStr2 = "";
+		for(int i=0; i<toolss.size(); i++){
+			tempStr2 = tempStr2 + toolss.get(i);
+			if(i<toolss.size()-1)
+				tempStr2 += " ";
+		}
+		tempStr2 = tempStr2 + "]";
+		toolString = toolString + tempStr2;
+		JLabel toolLabel = new JLabel(toolString);
+		lowUpperBottom.add(toolLabel);
 		
 		//Getting the order.
 		int[] tempTab = alOrders.get(minIndex);
@@ -225,7 +247,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			tab.add(tempLabel);
 		}
 		
-		//Getting matrix to fill next lines.
+		//Getting matrix for filling next lines.
 		int[][] tempMatrix = JobS.getOrderMatrix(minIndex, alOrders, jobInput);
 		
 		//Filling next lines with the matrix.
@@ -233,7 +255,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			for(int j=0; j<tempMatrix.length; j++){
 				String tempStr = " " + tempMatrix[j][i];
 				JLabel tempLabel = new JLabel(tempStr);
-				if(tempMatrix[j][i] == 0)
+				if(tempMatrix[j][i] == 0 && j!=0 && j<jobN-1)
 					tempLabel.setForeground(new Color(50,205,50));
 				tempLabel.setHorizontalAlignment(JLabel.CENTER);
 				tab.add(tempLabel);
@@ -245,6 +267,9 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		container.add(bottom, BorderLayout.SOUTH); 
 		bottom.add(upperBottom);
 		bottom.add(lowerBottom);
+		upperBottom.add(upUpperBottom);
+		upperBottom.add(lowUpperBottom);
+		
 		//Set size and return.
 		this.setSize(250,300);
 		return container;
@@ -331,6 +356,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			//Clearing in case they're not empty.
 			alOrders.clear();
 			alCosts.clear();
+			alTools.clear();
 			
 			JobS inputJobS = ReadJobS.inputJobMatrix(); //input matrix.
 			int minIndex; //Will stock the best order index.
@@ -347,9 +373,9 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 //				System.out.println(alCosts.get(i));
 //			}
 			//Getting best order index.
+			System.out.println("Getting min cost");
 			minIndex = JobS.getMinCost(alCosts);
-			System.out.println(minIndex);
-			System.out.println(alCosts.get(minIndex));
+			
 			
 			//Setting pane.
 			this.setContentPane(optiPanel(minIndex));
@@ -417,7 +443,19 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 						bw.newLine();
 						bw.write("Cost : ");
 						bw.write(String.valueOf(minCost));
+						bw.newLine();
+						//Getting tools list.
+						ArrayList<Integer> toolsList = alTools.get(minIndex);
+						bw.write("Tools to keep : ");
+						for(int i=0; i<toolsList.size(); i++){
+							bw.write(String.valueOf(toolsList.get(i)));
+							bw.write(" ");
+						}
 						
+						//Notes to user.
+						bw.newLine();
+						bw.newLine();
+						bw.write("CAUTION : The tools to keep in 0's are for 0's from up to down, left to right. (So first will be first column from top to bottom, next will be second column from top to bottom,...).");
 						
 						//Closing writer.
 			            bw.close();

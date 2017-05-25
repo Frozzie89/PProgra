@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class JobS {
 	private int[] jobOrder;
 	private int[][] jobS;
-
+	public static ArrayList<Integer> tools = new ArrayList<Integer>();
 	//Constructors
 	public JobS(int[][] jobS) {
 		super();
@@ -261,11 +261,11 @@ public class JobS {
 			return n;
 		}
 		
-		public static int compareTwoCol(JobS j1, int index1, int index2){ //Polymorph method above for only 1 JobS as parameter.
+		public static int compareTwoCol(JobS j1, int index1, int index2){ //Polymorph method above for only 1 JobS as parameter. (tools is not used here but i added it anyway for clarity and similarity with the methode under this one.
 			int indexData = 0;												
 			int cost = j1.jobS[index1].length;										 
 			int nZeros = numberCounter(j1.jobS[index2], 0);
-			int[] tools = new int[numberCounter(j1.jobS[index1], 0)];
+			assert(nZeros >= 0);
 			
 			while(indexData<j1.jobS[index1].length){
 				if(j1.jobS[index1][indexData] != 0){
@@ -285,20 +285,20 @@ public class JobS {
 				}
 			}
 			cost -= nZeros;
-			Gui.alTools.add(tools);
 			return cost;
 		}
 		
-		public static int subCompareTwoCol(JobS j1, int index1, int index2, int[] seq){ //Polymorph method above for only 1 JobS as parameter.
+		public static int subCompareTwoCol(JobS j1, int index1, int index2, int indexTab1){ //Polymorph method above for only 1 JobS as parameter.
 			int indexData = 0;												
 			int cost = j1.jobS[index1].length;										 
-			int nZeros = numberCounter(j1.jobS[index2-1], 0);	
-			int[] tools = new int[numberCounter(j1.jobS[index1], 0)];
+			int nZeros = numberCounter(j1.jobS[index2], 0);	
+			int tab1Index = 0;
+
 			
 			while(indexData<j1.jobS[index1].length){
 				
 				if(j1.jobS[index1][indexData] != 0){
-						
+						assert(index2<6);
 						int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
 						int k = numberCounter(j1.jobS[index2], j1.jobS[index1][indexData]);
 						
@@ -314,22 +314,26 @@ public class JobS {
 				}else{
 			
 					//Initialize 3 tabs
-					int[] tab1 = j1.jobS[seq[index1]-2];
-					int[] tab2 = j1.jobS[seq[index1]-1];
-					int[] tab3 = j1.jobS[seq[index1]];
-					
-					if(isIn(tab3, tab1[indexData]) == true && isIn(tab2, tab1[indexData]) == false){
+					int[] tab1 = j1.jobS[indexTab1];
+					int[] tab2 = j1.jobS[index1];
+					int[] tab3 = j1.jobS[index2];
+					assert(tab2[indexData] == 0);
+					for(int i=tab1Index; i<Gui.toolN; i++){
+						tab1Index++;
+						if(isIn(tab3, tab1[i]) == true && isIn(tab2, tab1[i]) == false){ //TODO multiple zeros handle
 							nZeros-=1;
 							cost -=2;
-							tools[indexData] = tab1[indexData];
+							tools.add(tab1[i]);
+							
+							break;
+							
+						}
 					}
-					
 					indexData++;
-				
 				}
 			}
+			
 			cost -= nZeros;
-			Gui.alTools.add(tools);
 			return cost;
 		}
 		
@@ -341,7 +345,7 @@ public class JobS {
 		//Adds the first row cost. (first job) 
 		cost += (j1.jobS[0].length) - numberCounter(j1.selectTabIndex(getColIndex(seq, j1.jobOrder, 0)), 0); //Length - numbers of 0's of first row. (Cost of first row).
 		
-			for(int i=0; i<seq.length-1; i++){
+			for(int i=0; i<Gui.jobN-1; i++){
 //				System.out.print(getColIndex(seq, j1.jobOrder, i));
 //				System.out.println(getColIndex(seq, j1.jobOrder, i+1));
 //				System.out.println("-");
@@ -354,10 +358,21 @@ public class JobS {
 				
 				//Else check for tools in previous column.
 				else{
-					cost += subCompareTwoCol(j1, j1.jobOrder[seq[i]-2], j1.jobOrder[seq[i]-1], seq);
+					assert(i > 0):i;
+					assert(i <= 4):i;
+//					System.out.print(Arrays.toString(seq));
+//					System.out.println(Arrays.toString(j1.jobOrder));	
+					cost += subCompareTwoCol(j1, seq[i]-1, seq[i+1]-1, seq[i-1]-1);
+					
 				}
 			}
-		
+		System.out.println("here");
+		for(int i=0; i<tools.size(); i++){
+			System.out.print(tools.get(i));
+		}
+		System.out.println("size"+tools.size());
+		Gui.alTools.add(new ArrayList<Integer>(tools));
+		tools.clear();
 		return cost;
 	}
 	
@@ -369,7 +384,9 @@ public class JobS {
 			
 		//Stocks one by one in alCosts.
 			for(int i=0; i<Gui.alOrders.size(); i++){
+				System.out.println("StockJobSCost " + (i+1) + " out of " + Gui.alOrders.size()+".");
 				Gui.alCosts.add(i, JobSCostExt(j1, Gui.alOrders.get(i)));
+				assert(Gui.alOrders.get(i).length == 6);
 				//System.out.println(Arrays.toString(Gui.alOrders.get(i)));
 			}
 		
@@ -379,6 +396,7 @@ public class JobS {
 	public static int getMinCost(ArrayList<Integer> alCosts){
 		int index = 0;
 		for(int i=1; i<alCosts.size(); i++){
+			System.out.println("mincost");
 			if(alCosts.get(index) > alCosts.get(i))
 				index = i;
 		}
