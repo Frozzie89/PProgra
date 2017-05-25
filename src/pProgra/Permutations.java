@@ -10,9 +10,8 @@ public class Permutations {
 		//ArrayList must be empty. Basically returns all the switching possibilities between an integers array.
 			//Printing tab if iterations for that specific tab are done
 	        if (start == input.length) {
-	        	System.out.println(".");
-	        	
-	        	
+	        	System.out.println("Generating orders.");
+	   
 	        	Gui.alOrders.add(Arrays.copyOf(input, input.length)); //Making a deep copy of the tab ("=" would only copy index and...)
 	        	////////////////////////////////
 	        	// For printing tabs in console.

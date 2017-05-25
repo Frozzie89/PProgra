@@ -7,6 +7,9 @@ public class JobS {
 	private int[] jobOrder;
 	private int[][] jobS;
 	public static ArrayList<Integer> tools = new ArrayList<Integer>();
+	public static int tab1Index = 0;
+	public static int nZeros = 0;
+	public static int cost = 0;
 	
 	//Constructors
 	public JobS(int[][] jobS) {
@@ -199,12 +202,8 @@ public class JobS {
 		
 		public static int subCompareTwoCol(JobS j1, int index1, int index2, int indexTab1){ //Almost same method as above but with modifications when it encounters a 0.
 			int indexData = 0;												
-			int cost = j1.jobS[index1].length;										 
-			int nZeros = numberCounter(j1.jobS[index2], 0);	
-			
-			//index used under to not do the operations too many times.
-			int tab1Index = 0;
-
+			cost = j1.jobS[index1].length;										 
+			nZeros = numberCounter(j1.jobS[index2], 0);	
 			
 			while(indexData<j1.jobS[index1].length){
 				
@@ -230,31 +229,59 @@ public class JobS {
 					int[] tab3 = j1.jobS[index2];
 					
 					//For every numbers from the first tab (starts at the index so it doesnt count the same tool twice if multiple 0's).
-					for(int i=tab1Index; i<Gui.toolN; i++){
-						tab1Index++;
-						if(isIn(tab3, tab1[i]) == true && isIn(tab2, tab1[i]) == false){ 
-							//Modifications to cost (and -=1 to nzeros because we "change" a 0 to the new tool).
-							nZeros-=1;
-							cost -=2;
-							tools.add(tab1[i]);
-							
-							break;
-							
-						}
-					}
+//					for(int i=tab1Index; i<Gui.toolN; i++){
+//						tab1Index++;
+//						if(isIn(tab3, tab1[i]) == true && isIn(tab2, tab1[i]) == false){ 
+//							//Modifications to cost (and -=1 to nzeros because we "change" a 0 to the new tool).
+//							nZeros-=1;
+//							cost -=2;
+//							tools.add(tab1[i]);
+//							
+//							break;
+//							
+//						}
+//					}
+					int i=0;
+					boolean b = false;
+					assert(tab2[indexData]==0);
+					recurs(j1, index1, index2, indexTab1, tab1, tab2, tab3, i, b);
+					i=0;
 					indexData++;
 				}
 			}
 			
 			cost -= nZeros;
+			
 			return cost;
 		}
-		
+		public static void recurs(JobS j1, int index1, int index2, int indexTab1, int[] tab1, int[] tab2, int[] tab3, int i, boolean b){ //j1 is the input JobS, start b is false, start i with 0.
+			int debug = tab1Index;
+			i=Integer.valueOf(tab1Index);
+			if(i<Gui.toolN){
+				tab1Index++;
+				debug = tab1Index;
+				
+				if(isIn(tab3, tab1[i]) == true && isIn(tab2, tab1[i]) == false){ 
+					//Modifications to cost (and -=1 to nzeros because we "change" a 0 to the new tool).
+					nZeros-=1;
+					cost -=2;
+					tools.add(tab1[i]);
+					
+					
+				}else{
+					i++;
+					recurs(j1, index1, index2, indexTab1, tab1, tab2, tab3, i, b);
+				}
+			
+				
+			}
+			
+		} // TODO + add i=index
 		
 		//Used to calculate cost of the different orders. This method allows us to compare the costs by using only the input tab as reference, so we don't need to create n JobS objects, resulting in less memory used.
 		//j1 will be the input JobS for our project.
 	public static int JobSCostExt(JobS j1, int[] seq){ 
-		int cost = 0; 	//Total cost stock variable.
+	 	//Total cost stock variable.
 		//Adds the first row cost. (first job) 
 		cost += (j1.jobS[0].length) - numberCounter(j1.selectTabIndex(getColIndex(seq, j1.jobOrder, 0)), 0); //Length - numbers of 0's of first row. (Cost of first row).
 		
@@ -278,12 +305,9 @@ public class JobS {
 					cost += subCompareTwoCol(j1, seq[i]-1, seq[i+1]-1, seq[i-1]-1);
 					
 				}
+				
 			}
-		System.out.println("here");
-		for(int i=0; i<tools.size(); i++){
-			System.out.print(tools.get(i));
-		}
-		System.out.println("size"+tools.size());
+
 		Gui.alTools.add(new ArrayList<Integer>(tools));
 		tools.clear();
 		return cost;
@@ -299,6 +323,9 @@ public class JobS {
 			for(int i=0; i<Gui.alOrders.size(); i++){
 				System.out.println("StockJobSCost " + (i+1) + " out of " + Gui.alOrders.size()+".");
 				Gui.alCosts.add(i, JobSCostExt(j1, Gui.alOrders.get(i)));
+				nZeros = 0;
+				tab1Index = 0;
+				cost = 0;
 				assert(Gui.alOrders.get(i).length == 6);
 				//System.out.println(Arrays.toString(Gui.alOrders.get(i)));
 			}
