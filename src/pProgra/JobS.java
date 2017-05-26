@@ -11,6 +11,7 @@ public class JobS {
 	public static int nZeros = 0;
 	public static int cost = 0;
 	public static boolean b;
+	public static int toolsSize = tools.size();
 	
 	//Constructors
 	public JobS(int[][] jobS) {
@@ -236,20 +237,29 @@ public class JobS {
 					
 					//For every numbers from the first tab (starts at the index so it doesnt count the same tool twice if multiple 0's).
 					int i=0;
+					
 					//reset boolean
 					b = false;
+					toolsSize = Integer.valueOf(tools.size());
 					assert(tab2[indexData]==0);
-					recurs(j1, index1, index2, indexTab1, tab1, tab2, tab3, i, b);
+					
+					recurs(j1, index1, index2, indexTab1, tab1, tab2, tab3, i);
+					
+					//if no useful object can be kept then add 0 to the tab.
+
+						if(tools.size() == toolsSize)
+							tools.add(0);
+					
+					
 					i=0;
 					indexData++;
 				}
 			}
-			
 			cost -= nZeros;
 			return cost;
 		}
 		
-		public static void recurs(JobS j1, int index1, int index2, int indexTab1, int[] tab1, int[] tab2, int[] tab3, int i, boolean b){ //j1 is the input JobS, start b is false, start i with 0.
+		public static void recurs(JobS j1, int index1, int index2, int indexTab1, int[] tab1, int[] tab2, int[] tab3, int i){ //j1 is the input JobS, start b is false, start i with 0.
 			
 			//tab1Index (class static variable, else it was causing pointers errors) is used when i choose the tool to keep on 0, so i don't use the same tool twice.
 			//Setting i = tab1Index, so it will check starting from that index and avoid taking twice the same tool.
@@ -271,15 +281,9 @@ public class JobS {
 				}else{
 					//Else we check for next possible tool to keep.
 					i++;
-					recurs(j1, index1, index2, indexTab1, tab1, tab2, tab3, i, b);
+					recurs(j1, index1, index2, indexTab1, tab1, tab2, tab3, i);
 					
-				}
-				
-				//if no useful object can be kept then add 0 to the tab.
-				if(i==0){
-					if(b==false)
-						tools.add(0);
-				}
+				}				
 			}
 		} 
 		

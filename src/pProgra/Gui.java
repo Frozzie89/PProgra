@@ -299,6 +299,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 				jobInput = ReadJobS.inputJobMatrix(); 
 				jobN = ReadJobS.inputJobN();
 				toolN = ReadJobS.inputToolN();
+				Permutations.factorialN = Permutations.factorial(jobN);
 				
 				//Settinf pane.
 				this.setContentPane(accueil());
