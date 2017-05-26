@@ -7,11 +7,10 @@ public class JobS {
 	private int[] jobOrder;
 	private int[][] jobS;
 	public static ArrayList<Integer> tools = new ArrayList<Integer>();
-	public static int tab1Index = 0;
-	public static int nZeros = 0;
-	public static int cost = 0;
-	public static boolean b;
-	public static int toolsSize = tools.size();
+	private  static int tab1Index = 0;
+	private  static int nZeros = 0;
+	private static int cost = 0;
+	private static int toolsSize = tools.size();
 	
 	//Constructors
 	public JobS(int[][] jobS) {
@@ -238,9 +237,9 @@ public class JobS {
 					//For every numbers from the first tab (starts at the index so it doesnt count the same tool twice if multiple 0's).
 					int i=0;
 					
-					//reset boolean
-					b = false;
+					//Stock toolsize.
 					toolsSize = Integer.valueOf(tools.size());
+					
 					assert(tab2[indexData]==0);
 					
 					recurs(j1, index1, index2, indexTab1, tab1, tab2, tab3, i);
@@ -276,7 +275,6 @@ public class JobS {
 					nZeros-=1;
 					cost -=2;
 					tools.add(tab1[i]);
-					b = true; 
 					
 				}else{
 					//Else we check for next possible tool to keep.

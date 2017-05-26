@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class Permutations {
 
-	public static int counter = 1; 
+	private  static int counter = 1; 
 	public static int factorialN = factorial(Gui.jobN);
 	
 	public  static void jobSequences(int start, int[] input) { 
