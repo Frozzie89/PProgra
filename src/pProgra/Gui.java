@@ -75,7 +75,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 		accueil.add(bottomContainer);
 		
 		this.setSize(500,100); //Setting frame size.
-		this.setResizable(false);
+		this.setResizable(true);
 		
 		return accueil;
 	}
