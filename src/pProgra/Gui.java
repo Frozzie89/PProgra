@@ -169,11 +169,9 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 	
 	@SuppressWarnings("unchecked")
 	private JPanel optiPanel(int minIndex){
+		
 		ArrayList<Integer> toolss = alTools.get(minIndex);
-		System.out.println("ll"+toolss.size());
-		System.out.println(alOrders.size());
-		System.out.println(alCosts.size());
-		System.out.println(alTools.size());
+		
 		for(int i=0; i<toolss.size(); i++){
 			System.out.print(toolss.get(i));
 		}
@@ -347,7 +345,6 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			//Calculates cost of the order.
 			OrderButton temp = (OrderButton)source;
 			int cost = JobS.JobSCostExt(jobInput, alOrders.get(temp.getID()));  
-			System.out.println(cost);
 			this.setContentPane(showDetails(temp.getID(), cost));
 			this.setVisible(true);
 			
@@ -373,7 +370,6 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 //				System.out.println(alCosts.get(i));
 //			}
 			//Getting best order index.
-			System.out.println("Getting min cost");
 			minIndex = JobS.getMinCost(alCosts);
 			
 			

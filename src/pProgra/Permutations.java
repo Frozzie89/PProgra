@@ -5,22 +5,19 @@ import java.util.Arrays;
 
 public class Permutations {
 
+	public static int counter = 1; 
+	public static int factorialN = factorial(Gui.jobN);
+	
 	public  static void jobSequences(int start, int[] input) { 
 		//This method is recursive, it will open multiple instances of the input tab by calling itself and modify them, then stock tab in ArrayList when the operations are done for this tab.
 		//ArrayList must be empty. Basically returns all the switching possibilities between an integers array.
 			//Printing tab if iterations for that specific tab are done
 	        if (start == input.length) {
-	        	System.out.println("Generating orders.");
-	   
+	        	System.out.println("Generating order "+counter+" out of " + factorialN+".");
+	        	counter++;
 	        	Gui.alOrders.add(Arrays.copyOf(input, input.length)); //Making a deep copy of the tab ("=" would only copy index and...)
-	        	////////////////////////////////
-	        	// For printing tabs in console.
-	            // for(int x: input){
-	            // System.out.print(x);
-	            // }
-	        	// System.out.println("here");
-	        	////////////////////////////////
-	        //End the specific tab loop when it's printed 
+	        	
+	        	//End the specific tab loop when it's printed 
 	        
 	        return;
 	        }
@@ -30,21 +27,7 @@ public class Permutations {
 		        input[i] = input[start];
 		        input[start] = temp;
 		        
-		        //////////////////////////////////////////////////
-		        // Tests to see algorithm steps
-		        //
-		        // System.out.print("temp : " + temp + " ... ");
-		        // System.out.print("i : "+i + " ... ");
-		        // System.out.print("start : " + start);
-		        // System.out.println("");
-		        // System.out.print("---");
-		        // for(int x: input){
-		        //  	System.out.print(x);
-		        // }
-		        // System.out.println("");
-		        //////////////////////////////////////////////////
-		        
-		        //Changing numbers
+		        //recursion
 		        jobSequences(start + 1, input);
 		        
 		       // Changing numbers
@@ -55,6 +38,16 @@ public class Permutations {
 	    }
 	}
 	
+	//Gets the factorial of n.
+    public static int factorial(int n) {
+        int result = 1; 
+        for (int i=1; i<=n; i++) {
+            result = result * i;
+        }
+        return result;
+    }
+
+
 //The 3 following methods will order numbers in the column i (ascending AND placing 0 at the end) (In case the user didn't already do it in the input file this will prevent further problems).
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public static void orderTab(int[] tab){  

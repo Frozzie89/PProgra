@@ -10,6 +10,7 @@ public class JobS {
 	public static int tab1Index = 0;
 	public static int nZeros = 0;
 	public static int cost = 0;
+	public static boolean b;
 	
 	//Constructors
 	public JobS(int[][] jobS) {
@@ -163,6 +164,8 @@ public class JobS {
 			// n = the length of the tab. Calculates numbers of same integers in the first tab as j and in the second tab as k. (except for 0's)
 			// If j > k then n-=k, but if j<=k then subtract  j to n. Then subtract the numbers of 0's in tab2 to n. The n left at the end is the number of changes necessary, or the cost.
 			
+			
+			//For this one i don't use recurs method so i don't need to set cost and nZeros as static class variables.
 			//Index used in the while loop.
 			int indexData = 0;				
 													
@@ -201,6 +204,8 @@ public class JobS {
 		}
 		
 		public static int subCompareTwoCol(JobS j1, int index1, int index2, int indexTab1){ //Almost same method as above but with modifications when it encounters a 0.
+			
+			//Here cost and nZeros are class variables becaus ei use them as parameters for recurs method and i want to keep the changes done. (then reset them after the calculations are done, i do that in stockJobSCost)
 			int indexData = 0;												
 			cost = j1.jobS[index1].length;										 
 			nZeros = numberCounter(j1.jobS[index2], 0);	
@@ -208,6 +213,7 @@ public class JobS {
 			while(indexData<j1.jobS[index1].length){
 				
 				if(j1.jobS[index1][indexData] != 0){
+					
 						assert(index2<6);
 						int j = numberCounter(j1.jobS[index1], j1.jobS[index1][indexData]);
 						int k = numberCounter(j1.jobS[index2], j1.jobS[index1][indexData]);
@@ -223,26 +229,15 @@ public class JobS {
 					
 				}else{
 			
-					//Initialize 3 tabs, stocks them (previous column, actual column and next column).
+					//Initialize 3 tabs, stocks them (previous column, actual column and next column).  //TODO 0 ? if no tool can be kept then what happens to tools tab ?
 					int[] tab1 = j1.jobS[indexTab1];
 					int[] tab2 = j1.jobS[index1];
 					int[] tab3 = j1.jobS[index2];
 					
 					//For every numbers from the first tab (starts at the index so it doesnt count the same tool twice if multiple 0's).
-//					for(int i=tab1Index; i<Gui.toolN; i++){
-//						tab1Index++;
-//						if(isIn(tab3, tab1[i]) == true && isIn(tab2, tab1[i]) == false){ 
-//							//Modifications to cost (and -=1 to nzeros because we "change" a 0 to the new tool).
-//							nZeros-=1;
-//							cost -=2;
-//							tools.add(tab1[i]);
-//							
-//							break;
-//							
-//						}
-//					}
 					int i=0;
-					boolean b = false;
+					//reset boolean
+					b = false;
 					assert(tab2[indexData]==0);
 					recurs(j1, index1, index2, indexTab1, tab1, tab2, tab3, i, b);
 					i=0;
@@ -251,32 +246,42 @@ public class JobS {
 			}
 			
 			cost -= nZeros;
-			
 			return cost;
 		}
+		
 		public static void recurs(JobS j1, int index1, int index2, int indexTab1, int[] tab1, int[] tab2, int[] tab3, int i, boolean b){ //j1 is the input JobS, start b is false, start i with 0.
-			int debug = tab1Index;
+			
+			//tab1Index (class static variable, else it was causing pointers errors) is used when i choose the tool to keep on 0, so i don't use the same tool twice.
+			//Setting i = tab1Index, so it will check starting from that index and avoid taking twice the same tool.
+			//Using valueOf so i don't get pointers problems.
 			i=Integer.valueOf(tab1Index);
+			//Stops when there's no more tool to check.
 			if(i<Gui.toolN){
 				tab1Index++;
-				debug = tab1Index;
 				
+				//If the condition is true, then we have the opportunity to keep an useful tool.
 				if(isIn(tab3, tab1[i]) == true && isIn(tab2, tab1[i]) == false){ 
+					
 					//Modifications to cost (and -=1 to nzeros because we "change" a 0 to the new tool).
 					nZeros-=1;
 					cost -=2;
 					tools.add(tab1[i]);
-					
+					b = true; 
 					
 				}else{
+					//Else we check for next possible tool to keep.
 					i++;
 					recurs(j1, index1, index2, indexTab1, tab1, tab2, tab3, i, b);
+					
 				}
-			
 				
+				//if no useful object can be kept then add 0 to the tab.
+				if(i==0){
+					if(b==false)
+						tools.add(0);
+				}
 			}
-			
-		} // TODO + add i=index
+		} 
 		
 		//Used to calculate cost of the different orders. This method allows us to compare the costs by using only the input tab as reference, so we don't need to create n JobS objects, resulting in less memory used.
 		//j1 will be the input JobS for our project.
@@ -286,11 +291,7 @@ public class JobS {
 		cost += (j1.jobS[0].length) - numberCounter(j1.selectTabIndex(getColIndex(seq, j1.jobOrder, 0)), 0); //Length - numbers of 0's of first row. (Cost of first row).
 		
 			for(int i=0; i<Gui.jobN-1; i++){
-//				System.out.print(getColIndex(seq, j1.jobOrder, i));
-//				System.out.println(getColIndex(seq, j1.jobOrder, i+1));
-//				System.out.println("-");
-//				System.out.print(j1.jobOrder[seq[i]]-2);
-//				System.out.println(j1.jobOrder[seq[i]]-1);
+
 				//If first or last row then do the normal method.
 				if(i == 0 || i == Gui.jobN-1){
 					cost += compareTwoCol(j1, getColIndex(seq, j1.jobOrder, i), getColIndex(seq, j1.jobOrder, i+1)); //Get the right columns indexes in the input matrix and compare them to get the cost.
@@ -298,10 +299,10 @@ public class JobS {
 				
 				//Else check for tools in previous column.
 				else{
+					//This part shouldn't be accessed from borders of matric. (columns 0 and n).
 					assert(i > 0):i;
-					assert(i <= 4):i;
-//					System.out.print(Arrays.toString(seq));
-//					System.out.println(Arrays.toString(j1.jobOrder));	
+					assert(i < Gui.jobN):i;
+	
 					cost += subCompareTwoCol(j1, seq[i]-1, seq[i+1]-1, seq[i-1]-1);
 					
 				}
