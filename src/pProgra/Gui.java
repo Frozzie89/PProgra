@@ -320,7 +320,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			
 			//Stocking orders in arraylist.
 			Permutations.jobSequences(0, input);
-			
+			Permutations.counter = 1;
 			//Setting pane.
 			this.setContentPane(showOrders());
 			this.setResizable(true);
@@ -345,7 +345,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			//Used when the user press an orderButton (on the order List).
 			//Calculates cost of the order.
 			OrderButton temp = (OrderButton)source;
-			int cost = JobS.JobSCostExt(jobInput, alOrders.get(temp.getID()));  
+			int cost = alCosts.get(temp.getID());  
 			this.setContentPane(showDetails(temp.getID(), cost));
 			this.setVisible(true);
 			
@@ -365,6 +365,7 @@ public class Gui extends JFrame implements ActionListener{ // Implements ActionL
 			}
 			//Stocking all orders in ArrayList.
 			Permutations.jobSequences(0, input);
+			Permutations.counter = 1;
 			//Stocking all costs in parallel.
 			JobS.StockJobSCost(inputJobS);
 //			for(int i=0; i< alCosts.size(); i++){
